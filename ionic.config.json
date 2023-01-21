@@ -1,0 +1,8 @@
+{
+  "name": "project-dax-mobile",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular",
+  "id": "d3caf858"
+}
