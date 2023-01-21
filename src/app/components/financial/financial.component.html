@@ -1,0 +1,32 @@
+  <div id="stock-data">
+    <ion-card *ngIf="item.symbol">
+      <ion-grid>
+        <ion-row style="background-color: lightgrey; font-size: 20px;">
+          <ion-col class="ion-align-self-center" size="2">
+            <ion-icon color="secondary" ios="ios-add-circle" md="md-add-circle" (click)="addToWatchlist(item.symbol, item.name)" *ngIf="modus === 'add'"></ion-icon>
+            <ion-icon color="secondary" name="remove-circle" (click)="removeWatchlistItem(item.symbol, item.name)" *ngIf="modus === 'remove'"></ion-icon>
+            <ion-icon color="secondary" name="stats" (click)="getHistory(item.symbol)"></ion-icon>
+            <ion-icon color="secondary" ios="ios-analytics" md="md-analytics" (click)="getChart(item)"></ion-icon>            
+          </ion-col>
+          <ion-col [style.color]="getStyle(item.change)" size="4">
+            <span>{{item.name}}</span>        
+          </ion-col>
+          <ion-col>{{"Date: " + (item.date | date: "short")}}</ion-col>
+          <ion-col>{{"Last: " + item.close}}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col></ion-col>
+          <ion-col>{{"Open: "   + item.open}}</ion-col>
+          <ion-col>{{"High: "   + item.high}}</ion-col>
+          <ion-col>{{"Low: "    + item.low}}</ion-col>
+        </ion-row> 
+        <ion-row>
+          <ion-col></ion-col>
+          <ion-col>{{"Symbol: " + item.symbol}}</ion-col>
+          <ion-col>{{"Volume: " + item.volume + " k"}}</ion-col>
+          <ion-col>{{"Veränderung: " + (item.change | number:"1.2-2")}}</ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card> 
+  </div>
+    

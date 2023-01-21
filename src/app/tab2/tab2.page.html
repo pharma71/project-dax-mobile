@@ -1,17 +1,25 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
+<!-- Header-->
+<ion-header>
+  <ion-toolbar color="primary">
     <ion-title>
-      Tab 2
+            My Watchlist
     </ion-title>
   </ion-toolbar>
 </ion-header>
+<!--Ende Header-->
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+<!-- Content-->
+<ion-content padding>       
+<ng-container *ngFor="let item of watchlistData  | async">
+  <financial [modus]="'remove'" [item]="item" (updateWatchlist)="updateWatchlist()"></financial>
+  <br>
+</ng-container>
+<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="primary" [routerLink]="['/tabs/tab3']">
+      <ion-icon name="add-circle"></ion-icon>
+    </ion-fab-button>
+</ion-fab>
 </ion-content>
+<!-- Ende Content-->                                                                                                                                    
+          
+

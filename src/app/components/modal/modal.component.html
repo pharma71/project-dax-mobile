@@ -1,0 +1,62 @@
+<ion-header>
+    <ion-toolbar color="primary">
+      <ion-title>
+        Stock {{mode | titlecase}} {{data.data.name}}
+      </ion-title>
+      <ion-icon slot="end" name="close-circle-outline" (click)="close()" style="zoom: 1;"></ion-icon>
+    </ion-toolbar>
+  </ion-header>
+                  
+  <ion-content padding>
+    <ion-grid *ngIf="mode == 'history'">
+      <ion-row style="background-color: lightgrey;">
+        <ion-col>
+          Datum
+        </ion-col>
+        <ion-col>
+            Open
+          </ion-col>
+          <ion-col>
+              High
+            </ion-col>
+            <ion-col>
+                Low
+              </ion-col>
+              <ion-col>
+                  Close
+                </ion-col>
+      </ion-row>
+      <ion-row *ngFor="let item of historyData; index as i;">
+          <ion-col>
+            {{item}}
+          </ion-col>
+          <ion-col>
+              {{data['data'][item]['1. open']}}
+            </ion-col>
+            <ion-col>
+                {{data['data'][item]['2. high']}}
+              </ion-col>
+              <ion-col>
+                  {{data['data'][item]['3. low']}}
+                </ion-col>
+                <ion-col>
+                    {{data['data'][item]['4. close']}}
+                  </ion-col>
+        </ion-row>
+    </ion-grid>
+    <div id="chart"></div>
+    <ion-grid *ngIf="mode == 'chart'" style="margin-top: 5%;">
+      <ion-row style="background-color: lightgrey;">
+        <ion-col>{{data.data.name | truncate:[10]}}</ion-col>
+        <ion-col>{{'Symbol: ' + data.data.symbol}}</ion-col>
+        <ion-col>{{'Last: ' + (data.data.price | number:'.0-2') + ' ' + data.data.currency}}</ion-col>
+        <ion-col>{{'Date: ' + data.data.date}}</ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>{{'Open: ' + (data.data.open | number:'.0-2')}}</ion-col>
+        <ion-col>{{'High: ' + (data.data.high | number:'.0-2')}}</ion-col>
+        <ion-col>{{'Low: ' + (data.data.low | number:'.0-2')}}</ion-col>
+        <ion-col>{{'Close: ' + (data.data.close | number:'.0-2')}}</ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-content>
