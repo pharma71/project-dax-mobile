@@ -1,11 +1,11 @@
 import { Component, ViewChild, AfterViewInit, ElementRef, EventEmitter } from '@angular/core';
-import { Platform, LoadingController, Events, MenuController, IonContent, IonHeader, IonFooter } from '@ionic/angular';
+import { Platform, LoadingController, MenuController, IonContent, IonHeader, IonFooter } from '@ionic/angular';
 import { FinancialComponent } from '../components/financial/financial.component';
 import { NotifyService } from '../providers/notify.service';
 import { DataService } from '../providers/data.service';
 import { Storage } from '@ionic/storage';
 import { share } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { EventsService } from '../providers/events.service';
 
 
 @Component({
@@ -35,13 +35,15 @@ export class Tab1Page implements AfterViewInit{
 
 
   constructor(private httpService: DataService, private loadCtrl: LoadingController, private notify: NotifyService, 
-    private financial: FinancialComponent, private platform: Platform, private storage: Storage, private event: Events,
+    private financial: FinancialComponent, private platform: Platform, private storage: Storage, private event: EventsService,
     private menu: MenuController) {
   
+    // Subscribe to popoverClose
+    this.event.subscribeData('popoverClose')?.subscribe((data:any)=>{console.log('popoverClose', data)})
+
+    // Subscribe to login, data sind nur die login Daten email + passwort
+    this.event.subscribeData('login')?.subscribe((data:any)=>{console.log('login', data), this.handleLogin(data)})
     
-    this.event.subscribe('navPopoverClose', (data:any) => {
-      console.log('popoverClose', data);
-    });
 
     this.platform.ready()
     .then(()=>{
@@ -54,14 +56,7 @@ export class Tab1Page implements AfterViewInit{
     this.recomand$ = this.httpService.getRecomandation(this.defaultData.recommandation) 
 
     // Clear history storage
-    this.storage.clear();
-
-    // Subscribe to login
-    this.event.subscribe('login', (data:any) => {
-       
-        // data sind nur die login Daten email + passwort
-        this.handleLogin(data);
-    })    
+    this.storage.clear();  
   }
 
   async showLoadingSpinner(){

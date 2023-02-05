@@ -23,7 +23,7 @@ export class Tab3Page {
   public myError:any;
   public myService:any;
   public myQuote:any;
-  public mySymbols = null;
+  public mySymbols:any;
 
 
   constructor(private httpService:DataService, private notify: NotifyService, private storage: Storage) {
@@ -38,8 +38,8 @@ export class Tab3Page {
   addToWatchlist(symbol:string, name:string) {
      
       let result = this.httpService
-          .setWatchlistItem(this.userData.user_id, this.userData.member_id, symbol, name);
-          result.subscribe(
+          .setWatchlistItem(this.userData.user_id, this.userData.member_id, symbol, name)
+          .subscribe(
             (data:any)=> {this.notify.presentToast('Watchlist item was succesfully saved'); console.log(data, 'Data')},
             (error:any) => {this.notify.presentAlert({text: 'Watchlist item was not saved', header: 'Database Alert', subheader: 'Server error'}); 
                 console.log('HTTP Error', error)} // error path

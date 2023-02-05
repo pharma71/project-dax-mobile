@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { LocalNotifications } from '@capacitor/local-notifications';
 
 
-
 @Injectable({
   providedIn: 'root',
 })

@@ -1,13 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DataService } from 'src/app/providers/data.service';
 import { ModalComponent } from '../modal/modal.component';
-import { ModalController } from '@ionic/angular';
+import { IonModal, ModalController } from '@ionic/angular';
 import { NotifyService } from 'src/app/providers/notify.service';
 import { Storage } from '@ionic/storage';
-
-
-declare var techan;
-declare var d3;
+import { EventsService } from 'src/app/providers/events.service';
+import { HttpResponse } from '@angular/common/http';
 
 
 @Component({
@@ -19,14 +17,15 @@ declare var d3;
 export class FinancialComponent implements OnInit {
 
     @Input() modus: any;
-    @Input() item: StockData;
+    @Input() item!: StockData;
     @Output() updateWatchlist = new EventEmitter<boolean>();
     
 
     public path:string = "/AJAX/git_repos/projektdax/projektdax/cakephp/ajax/csv?symbol=";
   
 
-   constructor(private httpService: DataService, private modalCtrl: ModalController, private storage: Storage, private notify: NotifyService) {
+   constructor(private httpService: DataService, private modalCtrl: ModalController, 
+    private storage: Storage, private notify: NotifyService, private event: EventsService) {
  
    }
 
@@ -38,13 +37,12 @@ export class FinancialComponent implements OnInit {
 
 
     // Push  chart data to market page
-    async showDetails(data, symbol, mode){
+    async showDetails(data:any, symbol:string, mode:any){
 
-        var modal = await this.modalCtrl.create({
+        const modal:any = await this.modalCtrl.create({
             component: ModalComponent,
             componentProps: {
-                'data': {data: data, symbol: symbol, mode: mode}, 
-                'modal': modal
+                'data': {data: data, symbol: symbol, mode: mode}
             }
         })
         console.log('Modal Daten', data, modal);
@@ -52,7 +50,7 @@ export class FinancialComponent implements OnInit {
         modal.present()
     }
 
-    getHistory(symbol){
+    getHistory(symbol:string){
 
         this.httpService.getHistory(symbol)
         .subscribe((data)=>{
@@ -60,7 +58,7 @@ export class FinancialComponent implements OnInit {
         });
     }
 
-    getStyle(change) {
+    getStyle(change:number) {
         var color = '';
         if (change > 0) {
             color = 'green';
@@ -72,13 +70,14 @@ export class FinancialComponent implements OnInit {
     }
 
     // returns a promise
-    getPrice(members, market) {
-        var that = this;
-        var array = [];
-        return new Promise(function (resolve, reject) {
+    getPrice(members:any, market:string):Promise<any> {
+
+        const array = <any>[];
+
+        return new Promise((resolve, reject)=> {
             var counter = 1;
             var stop = Object.keys(members).length;
-            Object.keys(members).forEach(function (value, index) {
+            Object.keys(members).forEach((value, index)=> {
                 if (market == "watchlist") {
                     var symbol = members[value].ticker;
                     var name = members[value].name;
@@ -88,11 +87,10 @@ export class FinancialComponent implements OnInit {
                     var name = members[value].name;
                 }
                 symbol = symbol.replace(':', '_');
-                console.log('Verarbeite ', value, symbol);
-                that.httpService.getPrice(symbol)
-                    .subscribe(function (data) {
+                this.httpService.getPrice(symbol)
+                    .subscribe((data: any)=> {
                     var csv = data.text();
-                    var tmp = that.csvJSON(csv, name, symbol);
+                    var tmp = this.csvJSON(csv, name, symbol);
                     array.push(tmp);
                     if (index == stop - 1) {
                         console.log('Ausgabe', array);
@@ -106,7 +104,7 @@ export class FinancialComponent implements OnInit {
         }); // Ende Promise
     }
     
-    csvJSON = function (csv, name, symbol) {
+    csvJSON(csv:any, name:string, symbol:string) {
         var v = csv;
         v = v.substring(1, v.length - 3); // Erase "" chars 
         var lines = v.split('\\n');
@@ -135,9 +133,12 @@ export class FinancialComponent implements OnInit {
             var add = (Number(row[0]) * 60);
             result.push(myResult); // take this for intraday chart
         }
+
+        // Extra code für einen aktuellen Preis mit einer Line
+        // Convert result array to object?
         var time = new Date(Number(timestamp + '000'));
-        if (i > 1)
-            time.setSeconds(time.getSeconds() + add);
+       // if (i > 1)  ist das benötigt???
+       //     time.setSeconds(time.getSeconds() + add);
         var change = Number(last) - Number(open);
         var myReturn = { name: name, symbol: symbol, date: time, close: Number(result[counter].close), high: high, low: low, open: Number(result[0].open), volume: volume, change: change };
         //return result; //JavaScript object
@@ -150,10 +151,9 @@ export class FinancialComponent implements OnInit {
         this.showDetails(item,item.symbol,'chart');
     }
 
-    addToWatchlist(symbol, name) {
+    addToWatchlist(symbol:string, name:string) {
 
-        var userData: UserData = null;
-        console.log('Add to Watchlist getriggert', symbol, name);
+        let userData: UserData
 
         this.storage.get('user')
         .then((val) => {
@@ -161,8 +161,8 @@ export class FinancialComponent implements OnInit {
             console.log('User Data für Android ', userData);
 
             let result = this.httpService
-            .setWatchlistItem(userData.user_id, userData.member_id, symbol, name);
-            result.subscribe(
+            .setWatchlistItem(userData.user_id, userData.member_id, symbol, name)
+            .subscribe(
               (data)=> {this.notify.presentToast('Watchlist item was succesfully saved'); console.log(data, 'Data')},
               (error) => {this.notify.presentAlert({text: 'Watchlist item was not saved', header: 'Database Alert', subheader: 'Server error'}); 
                   console.log('HTTP Error', error)} // error path
@@ -174,9 +174,9 @@ export class FinancialComponent implements OnInit {
 
     } 
 
-    removeWatchlistItem(id) {
+    removeWatchlistItem(id:any) {
 
-        var userData: UserData = null;
+        let userData: UserData;
 
         this.storage.get('user')
         .then((val) => {
@@ -185,9 +185,9 @@ export class FinancialComponent implements OnInit {
 
             this.httpService
                 .removeWatchlistItem(userData.user_id, userData.member_id, id)
-                .subscribe((data:string) =>  {
+                .subscribe((data:any) =>  {
                 console.log('Watchlist item entfernt', data);
-                this.updateWatchlist.emit(true);
+                this.event.publishData('updateWatchlist', true)
             });
          });
     }

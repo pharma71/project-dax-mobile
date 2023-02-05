@@ -17,14 +17,13 @@ declare var d3:any;
 export class ModalComponent implements OnInit {
     
   @Input() data!: {mode:any,data:any,symbol:any}
-  @Input() modal!: ModalController
 
   public historyData:Array<string>|null = null;
   public mode:string = '';
   public path:string = "/AJAX/csv?symbol=";
 
 
-  constructor() { }
+  constructor(private modal:ModalController) { }
 
   ngOnInit() {
 

@@ -1,10 +1,9 @@
 import { OnInit, Injectable, Output } from '@angular/core';
-import { LocalNotificationsService } from '../providers/local-notifications.service'
-import { Platform, AlertController, ToastController, Events } from '@ionic/angular';
-import { Toast } from '@capacitor/toast';
+import { Platform, AlertController, ToastController } from '@ionic/angular';
 import { PopoverController } from '@ionic/angular';
 import { PopoverComponent } from '../components/popover/popover.component';
-import { Capacitor } from '@capacitor/core';
+import { EventsService } from './events.service';
+import { LocalNotifications, LocalNotificationSchema, ScheduleOptions, Schedule, ScheduleResult } from '@capacitor/local-notifications';
 
 
 @Injectable({
@@ -17,8 +16,8 @@ export class NotifyService implements OnInit{
   public isAndroid: boolean = false;
 
   constructor(private platform: Platform, 
-    private alertController: AlertController, private toastController: ToastController, notifications: LocalNotificationsService
-    private toast: Toast, private event: Events, public popoverController: PopoverController){
+    private alertController: AlertController, private toastController: ToastController,
+    private toast: ToastController, private event: EventsService, public popoverController: PopoverController){
 
       if(this.platform.is('android')){
 
@@ -26,10 +25,9 @@ export class NotifyService implements OnInit{
 
         platform.ready().then(() => {
           console.log('Platform ready');
-      
-        notifications
-        .showLocalNotification('My Test Notification', 'Test Body', Date.now(), Math.random()*100)
-      
+          
+        // Local Notification is native only
+        this.notify()
       })
     }
   }
@@ -59,7 +57,7 @@ export class NotifyService implements OnInit{
     });
     popover.onDidDismiss().then((data)=>{
       data.role = 'navPopoverClose';
-      this.event.publish('navPopoverClose', data);
+      this.event.publishData('navPopoverClose', data);
     });
     popover.present();
     // popoverevents können nur intern von onDidDismiss etc gehandelt werden
@@ -101,7 +99,7 @@ export class NotifyService implements OnInit{
             text: 'Ok',
             handler: (data) => {
               console.log('Confirm Ok', data);
-              this.event.publish('login', data);
+              this.event.publishData('login', data);
             }
           }
         ]
@@ -122,38 +120,36 @@ export class NotifyService implements OnInit{
   }
   
   
-  notify(){
+  async notify(){
 
-      let options: ILocalNotification = 
+      let schedule: Schedule = {at: (new Date(Date.now()+1000))};
+      let schema: LocalNotificationSchema = 
         {
         // Schedule delayed notification (Dies ist NICHT heads-up, also nicht in der offenen App sichtbar)
         // see much more info https://github.com/katzer/cordova-plugin-local-notifications 
         id: 99,
         title: 'Attention',
-        text: 'Delayed Kris ILocalNotification',
-        trigger: {at: new Date(new Date().getTime() + 10000)},
-        led: 'FF0000',
+        body: 'Delayed Kris ILocalNotification',
+        schedule: schedule,
         sound: 'file://sound.mp3',
-        foreground: true, // Notify even if my app is in foreground
-        vibrate: true, // For heads up
-        priority: 2, // For heads up
-        data: {key: 'Secret message'},
-
-    // trigger: { in: 10, unit: ELocalNotificationTriggerUnit.SECOND} // standard way
+        extra: {key: 'Secret message'},
         }
+      let options: ScheduleOptions = {
+        notifications: [
+          schema
+        ]
+      }
 
-        // this.localNotifications.requestPermission();
-        this.localNotifications
-        .hasPermission()
-        .then(()=>{
-          this.localNotifications.schedule(
-            options
-          )
-          console.log( this.localNotifications.isScheduled(99), 'Scheduled', 
-          this.localNotifications.getScheduled(99), this.localNotifications.getDefaults())
+      // this.localNotifications.requestPermission();
+      await LocalNotifications
+      .checkPermissions()
+      .then(()=>{
+        LocalNotifications.schedule(
+          options
+        ).then((result: ScheduleResult)=>console.log('schedule', result))
 
-        })
-
+      LocalNotifications.getPending().then((list)=>console.log('Scheduled'));
+    })
   }
 
   ngOnInit() {
