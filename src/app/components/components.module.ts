@@ -14,7 +14,7 @@ import { TruncatePipe } from './pipes/truncate.pipe';
     CommonModule,
     IonicModule.forRoot()  // Damit FinancialComponent die IonicComponents kennt, z.B. <ion-icon>
   ],
-  exports: [FinancialComponent, ModalComponent, PopoverComponent]
+  exports: [FinancialComponent, ModalComponent, PopoverComponent, IonicModule]
 })
 
 export class ComponentsModule { }
