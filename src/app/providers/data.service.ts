@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
+import { map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class DataService {
 
   // host adress, google finance string
@@ -49,10 +51,11 @@ export class DataService {
 
   getWatchlist(user_id:string, member_id:string, name:string) {
    
-    return this.httpClient.get(`/AJAX/getWatchlist/${user_id}/${member_id}/${name}`);
+    return this.httpClient.get(`/AJAX/getWatchlist/${user_id}/${member_id}/${name}`)
+           
   }
 
-  getRecomandation(symbol:string){
+  getRecomandation(symbol:string):Observable<any>{
 
     return this.httpClient.get(`/AJAX/getRecomandation/${symbol}`);
   }

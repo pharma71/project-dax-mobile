@@ -16,7 +16,7 @@ import { HttpResponse } from '@angular/common/http';
 
 export class FinancialComponent implements OnInit {
 
-    @Input() modus: any;
+    @Input() modus!: string;
     @Input() item!: StockData;
     @Output() updateWatchlist = new EventEmitter<boolean>();
     
@@ -26,9 +26,7 @@ export class FinancialComponent implements OnInit {
 
    constructor(private httpService: DataService, private modalCtrl: ModalController, 
     private storage: Storage, private notify: NotifyService, private event: EventsService) {
- 
    }
-
 
     ngOnInit() {
 
@@ -59,18 +57,12 @@ export class FinancialComponent implements OnInit {
     }
 
     getStyle(change:number) {
-        var color = '';
-        if (change > 0) {
-            color = 'green';
-        }
-        else {
-            color = 'red';
-        }
-        return color;
+
+        return change > 0 ? 'red' : 'green';
     }
 
     // returns a promise
-    getPrice(members:any, market:string):Promise<any> {
+    getPrice(members:any, market:string):Promise<historyData[]> {
 
         const array = <any>[];
 
@@ -174,7 +166,7 @@ export class FinancialComponent implements OnInit {
 
     } 
 
-    removeWatchlistItem(id:any) {
+    removeWatchlistItem(symbol:string) {
 
         let userData: UserData;
 
@@ -184,7 +176,7 @@ export class FinancialComponent implements OnInit {
             console.log('User Data für Android ', userData);
 
             this.httpService
-                .removeWatchlistItem(userData.user_id, userData.member_id, id)
+                .removeWatchlistItem(userData.user_id, userData.member_id, symbol)
                 .subscribe((data:any) =>  {
                 console.log('Watchlist item entfernt', data);
                 this.event.publishData('updateWatchlist', true)

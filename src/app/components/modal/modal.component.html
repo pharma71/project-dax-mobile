@@ -47,7 +47,7 @@
     <div id="chart"></div>
     <ion-grid *ngIf="mode == 'chart'" style="margin-top: 5%;">
       <ion-row style="background-color: lightgrey;">
-        <ion-col>{{data.data.name | truncate:[10]}}</ion-col>
+        <ion-col>{{data.data.name}}</ion-col>
         <ion-col>{{'Symbol: ' + data.data.symbol}}</ion-col>
         <ion-col>{{'Last: ' + (data.data.price | number:'.0-2') + ' ' + data.data.currency}}</ion-col>
         <ion-col>{{'Date: ' + data.data.date}}</ion-col>

@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { ModalComponent } from './modal/modal.component';
 import { PopoverComponent } from '../components/popover/popover.component';
 import { TruncatePipe } from './pipes/truncate.pipe';
+import { DataService } from '../providers/data.service';
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import { TruncatePipe } from './pipes/truncate.pipe';
     CommonModule,
     IonicModule.forRoot()  // Damit FinancialComponent die IonicComponents kennt, z.B. <ion-icon>
   ],
-  exports: [FinancialComponent, ModalComponent, PopoverComponent, IonicModule]
+  exports: [FinancialComponent, ModalComponent, PopoverComponent, IonicModule],
+  providers: [DataService]
 })
 
 export class ComponentsModule { }

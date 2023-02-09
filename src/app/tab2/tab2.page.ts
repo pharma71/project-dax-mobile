@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { DataService } from '../providers/data.service';
 import { Storage } from '@ionic/storage';
-import { FinancialComponent } from '../components/financial/financial.component';
 import { Observable } from 'rxjs';
+import { share } from 'rxjs/operators';
 import { ModalComponent } from '../components/modal/modal.component';
 import { ModalController } from '@ionic/angular';
 
@@ -10,35 +10,37 @@ import { ModalController } from '@ionic/angular';
   selector: 'app-tab2',
   templateUrl: 'tab2.page.html',
   styleUrls: ['tab2.page.scss'],
-  providers: [FinancialComponent]
+  providers: [Storage]
 })
 export class Tab2Page {
 
   // Watchlist Page
 
-  public watchlistData:Observable<Object>|null = null;
+  public watchlistData!:any;
   public watchlistQuotes:any = null;
   public hideBackButton:boolean = false;
-  public userData:UserData = {user_id:'',member_id:'',name:''};
+  public userData:UserData = {user_id: '29', member_id: '2', name: 'Kristian Knorr'};
 
-  constructor(private httpService: DataService, private storage: Storage, private financial: FinancialComponent,
+  constructor(private httpService: DataService, private storage: Storage,
             private modalCtrl: ModalController) {
  
-    this.storage.set('user', JSON.stringify({user_id: 29, member_id: 2, name: 'Kristian Knorr'}))
+ /*   this.storage.create().then(()=>          
+    this.storage.set('user', JSON.stringify(this.userData))
     .then(() => {
         this.storage.get('user').then((val:any) => {
             this.userData = JSON.parse(val); // Todo change to ionic local storage for promise
             console.log('User Data', this.userData);
         })
-    });
+    })); */
 }
 
   ionViewWillEnter(){
-    this.storage.get('user')
+  /*  this.storage.get('user')
         .then((val:any) => {
         this.userData = JSON.parse(val);
-        this.getWatchlist(this.userData.user_id, this.userData.member_id, this.userData.name) ;
-    });
+        
+    });*/
+    this.getWatchlist(this.userData.user_id, this.userData.member_id, this.userData.name) ;
   }
 
   // Push chart data to market page
@@ -66,7 +68,8 @@ export class Tab2Page {
 
   getWatchlist(user_id:string, member_id:string, name:string) {
      
-    this.watchlistData = this.httpService.getWatchlist(user_id, member_id, name);
+    this.watchlistData = this.httpService.getWatchlist(user_id, member_id, name).pipe(share());
+    console.log("watchlist data share", this.watchlistData)
   }
 
 

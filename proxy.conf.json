@@ -1,0 +1,42 @@
+
+{
+    "/AJAX/*": {
+       "target": "http://localhost:80/project-dax-desktop/cakephp",
+       "changeOrigin": true,
+       "secure": false,
+       "logLevel": "debug",
+       "pathRewrite": {
+        "^/AJAX": "/ajax/"
+       }
+    },
+
+    "/empfehlungen/*": {
+      "target": "http://localhost:80/project-dax-desktop/cakephp",
+      "changeOrigin": true,
+      "secure": false,
+      "logLevel": "debug",
+      "pathRewrite": {
+       "^/empfehlungen": "/empfehlungen/"
+      }
+   },
+  
+     "/API/*": {
+      "target": "http://localhost:80/project-dax-desktop/cakephp",
+      "changeOrigin": true,
+      "secure": false,
+      "logLevel": "debug",
+      "pathRewrite": {
+       "^/API": ""
+      }
+    },
+    
+    "/time/*": {
+     "target": "http://localhost:80",
+     "changeOrigin": true,
+     "secure": false,
+     "logLevel": "debug",
+     "pathRewrite": {
+      "^/time": ""
+    }
+  }
+}

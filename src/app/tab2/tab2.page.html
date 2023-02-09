@@ -9,11 +9,14 @@
 <!--Ende Header-->
 
 <!-- Content-->
-<ion-content padding>       
-<ng-container *ngFor="let item of watchlistData  | async">
-  <financial [modus]="'remove'" [item]="item" (updateWatchlist)="updateWatchlist()"></financial>
-  <br>
-</ng-container>
+<ion-content padding>  
+  <ng-container *ngIf="watchlistData">     
+    <ng-container *ngFor="let item of watchlistData | async as data; index as i; last as isLast">
+      <financial [modus]="'remove'" [item]="item" (updateWatchlist)="updateWatchlist()"></financial>
+      <br>
+    </ng-container>
+  </ng-container>
+
 <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button color="primary" [routerLink]="['/tabs/tab3']">
       <ion-icon name="add-circle"></ion-icon>

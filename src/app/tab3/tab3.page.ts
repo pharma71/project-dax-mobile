@@ -1,16 +1,17 @@
 import { Component } from '@angular/core';
 import { DataService } from '../providers/data.service';
 import { NotifyService } from '../providers/notify.service';
-import { Storage } from '@ionic/storage';
+import { StorageService } from '../providers/storage.service';
+import { AppComponent } from '../app.component';
 
 
 @Component({
   selector: 'app-tab3',
   templateUrl: 'tab3.page.html',
   styleUrls: ['tab3.page.scss'],
-  providers: [DataService]
+  providers: [DataService, Storage]
 })
-export class Tab3Page {
+export class Tab3Page{
 
 
   // Search Page
@@ -24,13 +25,14 @@ export class Tab3Page {
   public myService:any;
   public myQuote:any;
   public mySymbols:any;
+  public shouldShowCancel = true;
 
 
-  constructor(private httpService:DataService, private notify: NotifyService, private storage: Storage) {
- 
+  constructor(private httpService:DataService, private notify: NotifyService, private storage: StorageService) {
+  
     this.storage.get('user')
     .then((val:any) => {
-        this.userData = JSON.parse(val); // Todo change to ionic local storage for promise
+        this.userData = val ? JSON.parse(val) : this.userData; // Todo change to ionic local storage for promise
     })
     .catch() // No catch provided
 }

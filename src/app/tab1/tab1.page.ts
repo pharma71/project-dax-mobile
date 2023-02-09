@@ -1,18 +1,18 @@
 import { Component, ViewChild, AfterViewInit, ElementRef, EventEmitter } from '@angular/core';
 import { Platform, LoadingController, MenuController, IonContent, IonHeader, IonFooter } from '@ionic/angular';
-import { FinancialComponent } from '../components/financial/financial.component';
 import { NotifyService } from '../providers/notify.service';
 import { DataService } from '../providers/data.service';
 import { Storage } from '@ionic/storage';
 import { share } from 'rxjs/operators';
 import { EventsService } from '../providers/events.service';
+import { Observable } from 'rxjs';
 
 
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
-  providers: [FinancialComponent, DataService, NotifyService]
+  providers:[DataService, Storage]
 })
 export class Tab1Page implements AfterViewInit{
 
@@ -29,13 +29,13 @@ export class Tab1Page implements AfterViewInit{
   public market:string = '';
   public userData:UserData|null = null;
   public members:Array<number> = [];
-  public recomand$:Record<string, any> = [];
+  public recomand$:Observable<Recommandation>;
   public click = new EventEmitter<boolean>();
   private defaultData = {market: 'Dax', member: '2', recommandation: '100119'}
 
 
   constructor(private httpService: DataService, private loadCtrl: LoadingController, private notify: NotifyService, 
-    private financial: FinancialComponent, private platform: Platform, private storage: Storage, private event: EventsService,
+    private platform: Platform, private storage: Storage, private event: EventsService,
     private menu: MenuController) {
   
     // Subscribe to popoverClose
@@ -43,7 +43,6 @@ export class Tab1Page implements AfterViewInit{
 
     // Subscribe to login, data sind nur die login Daten email + passwort
     this.event.subscribeData('login')?.subscribe((data:any)=>{console.log('login', data), this.handleLogin(data)})
-    
 
     this.platform.ready()
     .then(()=>{
@@ -55,8 +54,9 @@ export class Tab1Page implements AfterViewInit{
     // Load default recommandation <dev>
     this.recomand$ = this.httpService.getRecomandation(this.defaultData.recommandation) 
 
+    this.storage.create().then(()=>this.storage.clear() )
     // Clear history storage
-    this.storage.clear();  
+     
   }
 
   async showLoadingSpinner(){
@@ -68,6 +68,15 @@ export class Tab1Page implements AfterViewInit{
       });
       return await loadingElement.present();
   }
+
+  presentLoginForm(){
+    this.notify.presentLoginMask()
+  }
+
+  presentPopover($event:Event){
+    this.notify.presentPopover($event)
+  }
+  
 
   handleLogin(data: {user: any, pass: any}){
 
