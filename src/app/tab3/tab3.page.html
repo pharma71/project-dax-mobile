@@ -16,16 +16,16 @@
   <ion-searchbar [(ngModel)]="search" [showCancelButton]="shouldShowCancel" name="search"></ion-searchbar><br><br>
 
   <ng-container style="margin-left: 10px;">
-    <ion-button (click)="searchSymbol(search)">Suche nach {{search}}</ion-button>
+    <ion-button style="padding-left: 10px;" (click)="searchSymbol(search)">Suche nach {{search}}</ion-button>
   </ng-container><br><br>
 
   <ng-container *ngIf="mySymbols">
     <ion-list>
       <ng-container *ngFor="let item of mySymbols | async">
         <ng-container *ngIf="item.name != ''">
-          <ion-item>{{'Name: ' + item.name+ '  '}}
+          <ion-item>{{'Name: ' + item.shortname+ '  '}}
             <ion-button (click)="getQuote(item.symbol)" color="secondary">More Details</ion-button>
-            <ion-button (click)="addToWatchlist(item.symbol, item.name)">Add to Watchlist</ion-button>
+            <ion-button (click)="addToWatchlist(item.symbol, item.shortname)">Add to Watchlist</ion-button>
           </ion-item>
           <ion-item>{{'Symbol: ' + item.symbol}}</ion-item>
           <ion-item>{{'Börse: ' + item.exchDisp}}</ion-item>
@@ -35,7 +35,9 @@
   </ng-container>
 
    <ng-container *ngIf="!mySymbols" style="text-align: center; margin-top: 10%;"><!--Center the icon -->
-     <ion-icon name="search" style="font-size: 300px; display: inline-block;"></ion-icon>
+    <div class="center"> 
+      <ion-icon name="search" style="font-size: 300px; display: inline-block;"></ion-icon>
+    </div>
    </ng-container>
 </ion-content>
 <!-- Ende Content -->            

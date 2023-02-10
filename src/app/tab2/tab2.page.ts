@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { DataService } from '../providers/data.service';
-import { Storage } from '@ionic/storage';
-import { Observable } from 'rxjs';
+import { StorageService } from '../providers/storage.service';
+import { EventsService } from '../providers/events.service';
 import { share } from 'rxjs/operators';
 import { ModalComponent } from '../components/modal/modal.component';
 import { ModalController } from '@ionic/angular';
@@ -19,28 +19,18 @@ export class Tab2Page {
   public watchlistData!:any;
   public watchlistQuotes:any = null;
   public hideBackButton:boolean = false;
-  public userData:UserData = {user_id: '29', member_id: '2', name: 'Kristian Knorr'};
+  public userData:UserData
 
-  constructor(private httpService: DataService, private storage: Storage,
-            private modalCtrl: ModalController) {
+  constructor(private httpService: DataService, private storage: StorageService,
+            private modalCtrl: ModalController, private event: EventsService) {
  
- /*   this.storage.create().then(()=>          
-    this.storage.set('user', JSON.stringify(this.userData))
-    .then(() => {
-        this.storage.get('user').then((val:any) => {
-            this.userData = JSON.parse(val); // Todo change to ionic local storage for promise
-            console.log('User Data', this.userData);
-        })
-    })); */
-}
+    this.storage.get('user').then((val:UserData) => {
+      this.userData = val
+      console.log('User Data', this.userData);
+      this.getWatchlist(this.userData.user_id, this.userData.member_id, this.userData.name) ;
+    });
 
-  ionViewWillEnter(){
-  /*  this.storage.get('user')
-        .then((val:any) => {
-        this.userData = JSON.parse(val);
-        
-    });*/
-    this.getWatchlist(this.userData.user_id, this.userData.member_id, this.userData.name) ;
+    this.event.subscribeData('updateWatchlist')?.subscribe(()=>this.updateWatchlist())
   }
 
   // Push chart data to market page
@@ -72,13 +62,12 @@ export class Tab2Page {
     console.log("watchlist data share", this.watchlistData)
   }
 
-
-  ngOnInit() {}
-
   updateWatchlist(){
 
     this.getWatchlist(this.userData.user_id, this.userData.member_id, this.userData.name) ;
   }
 
+  ionViewWillEnter(){}
+  ngOnInit() {}
 }
 

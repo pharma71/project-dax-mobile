@@ -2,7 +2,7 @@ import { Component, ViewChild, AfterViewInit, ElementRef, EventEmitter } from '@
 import { Platform, LoadingController, MenuController, IonContent, IonHeader, IonFooter } from '@ionic/angular';
 import { NotifyService } from '../providers/notify.service';
 import { DataService } from '../providers/data.service';
-import { Storage } from '@ionic/storage';
+import { StorageService } from '../providers/storage.service';
 import { share } from 'rxjs/operators';
 import { EventsService } from '../providers/events.service';
 import { Observable } from 'rxjs';
@@ -35,7 +35,7 @@ export class Tab1Page implements AfterViewInit{
 
 
   constructor(private httpService: DataService, private loadCtrl: LoadingController, private notify: NotifyService, 
-    private platform: Platform, private storage: Storage, private event: EventsService,
+    private platform: Platform, private storage: StorageService, private event: EventsService,
     private menu: MenuController) {
   
     // Subscribe to popoverClose
@@ -44,19 +44,16 @@ export class Tab1Page implements AfterViewInit{
     // Subscribe to login, data sind nur die login Daten email + passwort
     this.event.subscribeData('login')?.subscribe((data:any)=>{console.log('login', data), this.handleLogin(data)})
 
+    // Load default recommandation <dev>
+    this.recomand$ = this.httpService.getRecomandation(this.defaultData.recommandation) 
+    this.storage.get('user').then((data) => this.userData = data)
+
     this.platform.ready()
     .then(()=>{
         
         // Load default stock market <dev>
         this.loadMarket(this.defaultData.market);
     })
-
-    // Load default recommandation <dev>
-    this.recomand$ = this.httpService.getRecomandation(this.defaultData.recommandation) 
-
-    this.storage.create().then(()=>this.storage.clear() )
-    // Clear history storage
-     
   }
 
   async showLoadingSpinner(){
@@ -119,9 +116,9 @@ export class Tab1Page implements AfterViewInit{
 
       // Load Market Data from Local Storage, valid 1 hour 
       this.storage.keys()
-      .then((keys:any)=>{
+      .then((keys:string[]|undefined)=>{
 
-        if(keys.includes('market_' + market)){
+        if( keys && keys.includes('market_' + market)){
 
             this.storage.get('market_' + market)
             .then((data:any)=>{

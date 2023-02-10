@@ -57,7 +57,7 @@ export class NotifyService implements OnInit{
     });
     popover.onDidDismiss().then((data)=>{
       data.role = 'navPopoverClose';
-      this.event.publishData('navPopoverClose', data);
+      this.event.publishData('popoverClose', data);
     });
     popover.present();
     // popoverevents können nur intern von onDidDismiss etc gehandelt werden

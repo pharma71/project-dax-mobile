@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { DataService } from '../providers/data.service';
 import { NotifyService } from '../providers/notify.service';
 import { StorageService } from '../providers/storage.service';
-import { AppComponent } from '../app.component';
 
 
 @Component({
@@ -19,7 +18,7 @@ export class Tab3Page{
   public navCtrl:any;
   public testdata = [1, 2, 3];;
   public search:string = ''; // gibt sonst ein undefined im Suchfeld
-  public userData:UserData = {user_id:'',member_id:'',name:''};
+  public userData:UserData
   public watchlistData = [];
   public myError:any;
   public myService:any;
@@ -32,7 +31,7 @@ export class Tab3Page{
   
     this.storage.get('user')
     .then((val:any) => {
-        this.userData = val ? JSON.parse(val) : this.userData; // Todo change to ionic local storage for promise
+        this.userData = val 
     })
     .catch() // No catch provided
 }

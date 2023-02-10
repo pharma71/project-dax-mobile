@@ -1,9 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+const d3 = require ('../../../assets/d3.js');
+const techan = require ('../../../assets/techan.js');
 
-
-declare var techan:any;
-declare var d3:any;
+//declare var techan:any;
+//declare var d3:any;
 
 
 @Component({
@@ -20,10 +21,10 @@ export class ModalComponent implements OnInit {
 
   public historyData:Array<string>|null = null;
   public mode:string = '';
-  public path:string = "/AJAX/csv?symbol=";
+  public path:string = "/ajax/csv?symbol=";
 
 
-  constructor(private modal:ModalController) { }
+  constructor(private modal:ModalController) { console.log(d3)}
 
   ngOnInit() {
 
@@ -31,6 +32,7 @@ export class ModalComponent implements OnInit {
 
       case 'history':
         this.historyData  = Object.keys(this.data['data']);
+        console.log('history', this.historyData)
         this.mode="history";
         break;
 
@@ -80,12 +82,11 @@ export class ModalComponent implements OnInit {
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     symbol = symbol.trim();
-    
     let path = this.path.concat(symbol);
 
-    d3.csv(path, function(error:any, data:any) {
+    d3.csv(path, function(error:any, data:Array<any> ) {
         var accessor = candlestick.accessor();
-        console.log(data, 'data');
+        console.log(data, error, 'data');
         data = data.slice(0, 200).map(function(d:any) {
             return {
                 date: parseDate(d.Date),

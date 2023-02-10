@@ -8,13 +8,16 @@ export class StorageService {
   private _storage: Storage | null = null;
 
   constructor(private storage: Storage) {
-    this.init();
+    this.init()
+    .then(()=>this.set('user', {user_id: '29', member_id: '2', name: 'Kristian Knorr'}))
+
   }
 
   async init() {
     // If using, define drivers here: await this.storage.defineDriver(/*...*/);
     const storage = await this.storage.create();
     this._storage = storage;
+    return Promise.resolve();
   }
 
   // Create and expose methods that users of this service can
@@ -25,5 +28,13 @@ export class StorageService {
 
   public get(key: string) {
     return Promise.resolve(this._storage?.get(key));
+  }
+
+  public remove(key: string){
+    return Promise.resolve(this._storage?.remove(key))
+  }
+
+  public keys(){
+    return Promise.resolve(this._storage?.keys())
   }
 }

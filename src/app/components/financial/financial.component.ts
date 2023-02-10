@@ -1,11 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { DataService } from 'src/app/providers/data.service';
 import { ModalComponent } from '../modal/modal.component';
-import { IonModal, ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { NotifyService } from 'src/app/providers/notify.service';
-import { Storage } from '@ionic/storage';
+import { StorageService } from '../../providers/storage.service';
 import { EventsService } from 'src/app/providers/events.service';
-import { HttpResponse } from '@angular/common/http';
 
 
 @Component({
@@ -18,14 +17,14 @@ export class FinancialComponent implements OnInit {
 
     @Input() modus!: string;
     @Input() item!: StockData;
-    @Output() updateWatchlist = new EventEmitter<boolean>();
     
-
-    public path:string = "/AJAX/git_repos/projektdax/projektdax/cakephp/ajax/csv?symbol=";
+    public path:string
   
 
    constructor(private httpService: DataService, private modalCtrl: ModalController, 
-    private storage: Storage, private notify: NotifyService, private event: EventsService) {
+    private storage: StorageService, private notify: NotifyService, private event: EventsService) {
+
+        this.path = httpService.csvPath;
    }
 
     ngOnInit() {
@@ -52,6 +51,7 @@ export class FinancialComponent implements OnInit {
 
         this.httpService.getHistory(symbol)
         .subscribe((data)=>{
+            console.log('financial history', data)
             this.showDetails(data, symbol, 'history');
         });
     }
@@ -172,7 +172,7 @@ export class FinancialComponent implements OnInit {
 
         this.storage.get('user')
         .then((val) => {
-            userData = JSON.parse(val); // Todo change to ionic local storage for promise
+            userData = val;
             console.log('User Data für Android ', userData);
 
             this.httpService

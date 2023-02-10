@@ -1,22 +1,22 @@
 
 {
-    "/AJAX/*": {
+    "/ajax/*": {
        "target": "http://localhost:80/project-dax-desktop/cakephp",
        "changeOrigin": true,
        "secure": false,
        "logLevel": "debug",
        "pathRewrite": {
-        "^/AJAX": "/ajax/"
+        "^/ajax": "/ajax/"
        }
     },
 
-    "/empfehlungen/*": {
+    "/img/empfehlungen/*": {
       "target": "http://localhost:80/project-dax-desktop/cakephp",
       "changeOrigin": true,
       "secure": false,
       "logLevel": "debug",
       "pathRewrite": {
-       "^/empfehlungen": "/empfehlungen/"
+       "^/img/empfehlungen": "/img/empfehlungen/"
       }
    },
   

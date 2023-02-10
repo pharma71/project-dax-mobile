@@ -26,6 +26,10 @@ export class DataService {
     },
   };  
 
+  public csvPath  = "/AJAX/git_repos/projektdax/projektdax/cakephp/ajax/csv?symbol=";
+
+  // endpoints: search, removeWatchlistItem, addWatchlistItem, getRecommandation
+  // getMarketnumbers, market, getHistory, login, chart, csv, getWatchlist
   constructor(private platform: Platform, private httpClient: HttpClient) { }
 
   getHost() {
@@ -41,57 +45,59 @@ export class DataService {
 
   getChart(symbol:string) {
 
-    return this.httpClient.get(`/AJAX/csv?symbol=${symbol}`);
+    return this.httpClient.get(`/ajax/csv?symbol=${symbol}`);
   }
 
   getHistory(symbol:string) {
 
-    return this.httpClient.get(`/AJAX/getHistory/${symbol}`);
+    return this.httpClient.get(`/ajax/getHistory/${symbol}`);
   }
 
   getWatchlist(user_id:string, member_id:string, name:string) {
    
-    return this.httpClient.get(`/AJAX/getWatchlist/${user_id}/${member_id}/${name}`)
+    return this.httpClient.get(`/ajax/getWatchlist/${user_id}/${member_id}/${name}`)
            
   }
 
   getRecomandation(symbol:string):Observable<any>{
 
-    return this.httpClient.get(`/AJAX/getRecomandation/${symbol}`);
+    return this.httpClient.get(`/ajax/getRecomandation/${symbol}`);
   }
 
   setWatchlistItem(id:string, member:string, symbol:string, name:string) {
      
-    return this.httpClient.get(`/AJAX/addWatchlistItem/${id}/${member}/${symbol}/${name}`);
+    return this.httpClient.get(`/ajax/addWatchlistItem/${id}/${member}/${symbol}/${name}`);
   }
 
   removeWatchlistItem(id:string, user:string, member:string) {
   
-    return this.httpClient.get(`/AJAX/removeWatchlistItem/${id}/${user}/${member}`);
+    return this.httpClient.get(`/ajax/removeWatchlistItem/${id}/${user}/${member}`);
   }
 
   login(data:{user:string,pass:string}) {
   
-    return this.httpClient.get(`/AJAX/login/${data.user}/${data.pass}`);
+    return this.httpClient.get(`/ajax/login/${data.user}/${data.pass}`);
   }
 
   getMarket(market:string) {
 
-    return this.httpClient.get(`/AJAX/market/${market}`);
-  }
-
-  getMembers(market:any) {
-    
-    return this.httpClient.get(encodeURI(this.getHost().host + "ajax/getMembers/" + market))
+    return this.httpClient.get(`/ajax/market/${market}`);
   }
 
   searchSymbols(unternehmen:any) {
 
-    return this.httpClient.get(`/AJAX/search/${unternehmen}`);
+    return this.httpClient.get(`/ajax/search/${unternehmen}`);
   }
 
+  // Not supported by API
   getPrice(symbol:string) {
 
     return this.httpClient.get(encodeURI(this.getHost().host + `/api/getQuote/${symbol}`));
+  }
+
+  // Not supported by API
+  getMembers(market:any) {
+    
+    return this.httpClient.get(encodeURI(this.getHost().host + "ajax/getMembers/" + market))
   }
 }
