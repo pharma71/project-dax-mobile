@@ -17,17 +17,18 @@ const techan = require ('../../../assets/techan.js');
 
 export class ModalComponent implements OnInit {
     
-  @Input() data!: {mode:any,data:any,symbol:any}
+  @Input() data!: {mode:any,data:any,symbol:any,name:string}
 
   public historyData:Array<string>|null = null;
   public mode:string = '';
   public path:string = "/ajax/csv?symbol=";
 
 
-  constructor(private modal:ModalController) { console.log(d3)}
+  constructor(private modal:ModalController) { }
 
   ngOnInit() {
 
+        console.log(this.data)
     switch (this.data["mode"]){
 
       case 'history':

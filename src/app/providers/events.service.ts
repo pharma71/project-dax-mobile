@@ -13,7 +13,7 @@ export class EventsService {
     private events:Events[] = []
 
     constructor(){
-      this.events.push({'title': 'fooSubject', subject: new Subject<any>()});
+      this.events.push({'title': 'logout', subject: new Subject<any>()});
       this.events.push({'title': 'popoverClose', subject: new Subject<any>()});
       this.events.push({'title': 'login', subject: new Subject<any>()});
       this.events.push({'title': 'updateWatchlist', subject: new Subject<any>()});

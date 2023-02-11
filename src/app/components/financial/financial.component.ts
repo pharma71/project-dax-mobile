@@ -34,12 +34,12 @@ export class FinancialComponent implements OnInit {
 
 
     // Push  chart data to market page
-    async showDetails(data:any, symbol:string, mode:any){
+    async showDetails(data:any, symbol:string, mode:any, name?: string){
 
         const modal:any = await this.modalCtrl.create({
             component: ModalComponent,
             componentProps: {
-                'data': {data: data, symbol: symbol, mode: mode}
+                'data': {data: data, symbol: symbol, mode: mode, name: name}
             }
         })
         console.log('Modal Daten', data, modal);
@@ -47,12 +47,12 @@ export class FinancialComponent implements OnInit {
         modal.present()
     }
 
-    getHistory(symbol:string){
+    getHistory(symbol:string, name: string){
 
         this.httpService.getHistory(symbol)
         .subscribe((data)=>{
             console.log('financial history', data)
-            this.showDetails(data, symbol, 'history');
+            this.showDetails(data, symbol, 'history', name);
         });
     }
 

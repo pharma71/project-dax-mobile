@@ -43,7 +43,7 @@ export class Tab1Page implements AfterViewInit{
 
     // Subscribe to login, data sind nur die login Daten email + passwort
     this.event.subscribeData('login')?.subscribe((data:any)=>{console.log('login', data), this.handleLogin(data)})
-
+    this.event.subscribeData('logout')?.subscribe((data)=>console.log('user has logged out'))
     // Load default recommandation <dev>
     this.recomand$ = this.httpService.getRecomandation(this.defaultData.recommandation) 
     this.storage.get('user').then((data) => this.userData = data)
@@ -104,6 +104,7 @@ export class Tab1Page implements AfterViewInit{
     this.storage.remove('user');
     this.userData = null;
     this.footer.nativeElement.innerText = 'Footer'
+    this.event.publishData('logout', '');
   }
 
 
