@@ -4,5 +4,29 @@ ion-icon {
     font-size: 24px;
     color: darkgray;
     padding-left: 12px;
-    }
+}
+
+ion-item > span {
+   padding-left: 20px;
+   font-size: small;
+   text-align: right;
+}
+
+ion-item > ion-chip {
+    font-size: small;
+}
+
+ion-col.financial.company-name {
+    padding-top: 15px;
+}
+
+ion-col.financial.icons {
+    padding-bottom: 15px;
+}
+
+.list-md{
+    padding-bottom: 0px;
+    padding-top: 0px;
+    margin-bottom: -15px;
+}
  

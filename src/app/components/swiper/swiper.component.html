@@ -1,7 +1,91 @@
-<swiper-container fmSwiper [config]="config" init="false" class="w-full">
-  <swiper-slide class="w-[310px] sm:w-[450px] pb-6"
-       *ngFor="let slider of sliders">
-    {{slider}}
-  </swiper-slide>
-</swiper-container>
+<ion-content [scrollY]=false style="max-height: 250px;width: 100%">
+  <ion-slides pager="true" [options]="config">
+    <ion-slide>
+      <div class="container">
+        <img src="../../assets/1100x600.png">
+        <div class="top-right">top-right</div>
+      </div>
+    </ion-slide>
+    <ion-slide >
+      <div slot="container-start" class="parallax-bg"
+      style="background-image: url(https://swiperjs.com/demos/images/nature-1.jpg);" data-swiper-parallax="-23%">
+        <div class="slider-text-container">
+          <div class="title" data-swiper-parallax="-300">Parallax Slide 1</div>
+          <div class="subtitle" data-swiper-parallax="-200">Subtitle</div>
+          <div class="mytext" data-swiper-parallax="-100">
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. <!-- Aliquam
+              dictum mattis velit, sit amet faucibus felis iaculis nec. Nulla
+              laoreet justo vitae porttitor porttitor. Suspendisse in sem justo.
+              Integer laoreet magna nec elit suscipit, ac laoreet nibh euismod.
+              Aliquam hendrerit lorem at elit facilisis rutrum. Ut at
+              ullamcorper velit. Nulla ligula nisi, imperdiet ut lacinia nec,
+              tincidunt ut libero. Aenean feugiat non eros quis feugiat. -->
+            </p>
+        </div>
+        </div>
+      </div>
+    </ion-slide>
+    <ion-slide>
+    <div class="container">
+      <img src="../../assets/oil.jpg">
+      <div class="centered">Centered</div>
+    </div>
+    </ion-slide>
+    <ion-slide>
+    <img src="../../assets/gold.jpg">
+    </ion-slide>
+    <ion-slide>
+    <img src="../../assets/autobau.jpg">
+    </ion-slide>
+    <ion-slide>Slide 3</ion-slide>
+    <ion-slide>Slide 4</ion-slide>
+    <ion-slide>Slide 5</ion-slide>
+    <ion-slide>Slide 6</ion-slide>
+  </ion-slides>
+  <ng-container>
+    <span>Below slides title</span>
+  </ng-container>
+  <ion-grid>
+  <ion-row>
+    <ion-col size="2">
+
+      <!-- Previous slide button -->
+      <ion-button 
+        fill="clear" 
+        (click)="click()"
+        [class.disabled]="false">
+        <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-col>
+
+
+    <!-- Autoplay / stop play -->
+    <ion-col size="8">
+      <ion-button 
+        fill="clear" 
+        (click)="click()">
+        <ion-icon slot="icon-only" name="play-outline"></ion-icon>
+      </ion-button>
+
+      <ion-button 
+        fill="clear" 
+        (click)="click()">
+        <ion-icon slot="icon-only" name="stop-outline"></ion-icon>
+      </ion-button>
+    </ion-col>
+
+
+    <!-- Next slide button -->
+    <ion-col size="2">
+      <ion-button
+        fill="clear" 
+        (click)="click()"
+        [class.disabled]="false">
+        <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
+      </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+<ion-content>
 

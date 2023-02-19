@@ -2,5 +2,40 @@
 ion-icon {
     font-size: 24px;
     color: white;
-    }
+}
+
+body {
+    font: 10px sans-serif;
+}
+
+text {
+  //  fill: #000;
+}
+
+button {
+    position: absolute;
+    right: 20px;
+    top: 440px;
+    display: none;
+}
+
+path.candle.body {
+    stroke-width: 0;
+}
+
+path.candle.body.up{
+    fill: #00AA00;
+    stroke: #00AA00;
+}
+
+path.candle.body.down {
+    fill: #FF0000;
+    stroke: #FF0000;
+}
+
+#chart {
+    margin-bottom: 20px;
+    margin-left: 0px;
+}
+
 

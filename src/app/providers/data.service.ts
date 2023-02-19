@@ -50,7 +50,7 @@ export class DataService {
 
   getHistory(symbol:string) {
 
-    return this.httpClient.get(`/ajax/getHistory/${symbol}`);
+    return this.httpClient.get(`/ajax/csv?symbol=${symbol}`);
   }
 
   getWatchlist(user_id:string, member_id:string, name:string) {

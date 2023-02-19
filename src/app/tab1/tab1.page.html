@@ -50,32 +50,52 @@
 <app-swiper></app-swiper>
 </ng-container>
 
+<!-- Icon end -->
+<ion-segment (ionChange)="segmentChanged($event)" [(ngModel)]="segment" color="primary" value="1">  
+  <ion-segment-button value="1">
+    <ion-label>Indices</ion-label>
+  </ion-segment-button>
+  <ion-segment-button value="2">
+    <ion-label>Germany</ion-label>
+  </ion-segment-button>
+  <ion-segment-button value="3">
+    <ion-label>World</ion-label>
+  </ion-segment-button>
+</ion-segment>
+
 <!-- Markets Scroller -->
   <ng-container>
-    <ion-toolbar color="white" id="markets" class="overflowingContent">
+    <ion-toolbar color="white" id="markets" class="overflowingContent" *ngIf="segment > 1">
       <div style="overflow-x: scroll;width: 100%; text-align: center">
-        <ion-button (click)="loadMarket('Dax')" value="Dax Market" color="primary">Dax Market</ion-button>
-        <ion-button (click)="loadMarket('Dow')" value="Dow Market" color="primary">Dow</ion-button>
-        <ion-button (click)="loadMarket('MDax')" value="Mdax Market" color="primary">Mdax</ion-button>
-        <ion-button (click)="loadMarket('SDax')" value="Sdax Market" color="primary">SDax</ion-button>
-        <ion-button (click)="loadMarket('TecDax')" value="Tecdax Market" color="primary">TecDax</ion-button>
-        <ion-button (click)="loadMarket('Currencies')" value="Currencies" color="primary">Currencies</ion-button>
-        <ion-button (click)="loadMarket('WorldMarket')" value="World Market" color="primary">WorldMarket</ion-button>
-        <ion-button (click)="loadMarket('GermanMarket')" value="German Market" color="primary">GermanMarket</ion-button>
+        <ng-container *ngIf="segment==2">
+          <ion-button class="activated" (click)="loadMarket('Dax')" value="Dax Market" color="primary">Dax</ion-button>
+          <ion-button (click)="loadMarket('MDax')" value="Mdax Market" color="primary">Mdax</ion-button>
+          <ion-button (click)="loadMarket('SDax')" value="Sdax Market" color="primary">SDax</ion-button>
+          <ion-button (click)="loadMarket('TecDax')" value="Tecdax Market" color="primary">TecDax</ion-button>
+        </ng-container>
+        <ng-container *ngIf="segment==3">
+          <ion-button (click)="loadMarket('Currency')" value="Currencies" color="primary">Currencies</ion-button>
+          <ion-button (click)="loadMarket('Commodity')" value="Commodities" color="primary">Commodities</ion-button>
+          <ion-button (click)="loadMarket('Dow')" value="Dow Market" color="primary">Dow</ion-button>
+        </ng-container>
       </div>
     </ion-toolbar>
   </ng-container>
 
 <!-- Market Data -->
-  <ion-list>
+
     <ng-container *ngIf="marketData">
       <ng-container *ngFor="let item of marketData | async as data; index as i; last as isLast">
       <br> 
+      <ng-template *ngIf="device==='portrait'">
+        <ion-list-header>
+          <ion-label>{{'market name'}}</ion-label>
+        </ion-list-header>
+      </ng-template>
       <financial [item]="item" [modus]="'add'"></financial>
       <ion-item *ngIf="item.high == 0">{{"Name: " + item.name+ " No Data Available"}}</ion-item>
       </ng-container>
     </ng-container>
-  </ion-list>
 
   <div #display></div>  
   <div *ngIf="message != ''" id="message">{{message}}</div>

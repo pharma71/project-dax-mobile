@@ -29,7 +29,52 @@
 @import '~swiper/swiper-bundle.css';
 @import '~@ionic/angular/css/ionic-swiper.css';
 
-/* Without setting height the slides will take up the height of the slide's content */
-ion-slides {
-    height: 80%;
+#chart path.candle.body.up{
+    fill: #00AA00;
+    stroke: #00AA00;
+}
+
+#chart path.candle.body.down {
+    fill: #FF0000;
+    stroke: #FF0000;
+}
+
+#chart {
+    margin-bottom: 20px;
+    margin-left: 0px;
+}
+
+#chart text {
+    fill: #000;
+    font-weight: 900;
+    font-size: large;
   }
+  
+#chart button {
+    position: absolute;
+    right: 20px;
+    top: 440px;
+    display: none;
+}
+  
+#chart path.candle.body {
+    stroke-width: 0;
+}
+
+#chart path.candle {
+    stroke: #000000;
+}
+
+#chart div.tooltip {	
+position: absolute;			
+text-align: center;			
+width: auto;					
+height: auto;					
+padding: 2px;				
+font: 12px sans-serif;		
+background: rgba(0,0,0,0.8);	
+  color: #fff;
+border: 0px;		
+border-radius: 8px;			
+pointer-events: none;			
+}  

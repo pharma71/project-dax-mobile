@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { DataService } from '../providers/data.service';
 import { NotifyService } from '../providers/notify.service';
 import { StorageService } from '../providers/storage.service';
+import { EventsService } from '../providers/events.service';
 
 
 @Component({
@@ -27,7 +28,8 @@ export class Tab3Page{
   public shouldShowCancel = true;
 
 
-  constructor(private httpService:DataService, private notify: NotifyService, private storage: StorageService) {
+  constructor(private httpService:DataService, private notify: NotifyService, private storage: StorageService,
+              private eventService: EventsService) {
   
     this.storage.get('user')
     .then((val:any) => {
@@ -41,7 +43,7 @@ export class Tab3Page{
       let result = this.httpService
           .setWatchlistItem(this.userData.user_id, this.userData.member_id, symbol, name)
           .subscribe(
-            (data:any)=> {this.notify.presentToast('Watchlist item was succesfully saved'); console.log(data, 'Data')},
+            (data:any)=> {this.notify.presentToast('Watchlist item was succesfully saved'); console.log(data, 'Data'); this.eventService.publishData('updateWatchlist', '')},
             (error:any) => {this.notify.presentAlert({text: 'Watchlist item was not saved', header: 'Database Alert', subheader: 'Server error'}); 
                 console.log('HTTP Error', error)} // error path
             );

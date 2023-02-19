@@ -1,16 +1,17 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DataService } from 'src/app/providers/data.service';
 import { ModalComponent } from '../modal/modal.component';
-import { ModalController } from '@ionic/angular';
+import { ModalController, Platform } from '@ionic/angular';
 import { NotifyService } from 'src/app/providers/notify.service';
 import { StorageService } from '../../providers/storage.service';
 import { EventsService } from 'src/app/providers/events.service';
+import { of } from 'rxjs';
 
 
 @Component({
   selector: 'financial',
-  templateUrl: './financial.component.html',
-  styleUrls: ['./financial.component.scss'],
+  templateUrl: 'financial.component.html',
+  styleUrls: ['financial.component.scss'],
 })
 
 export class FinancialComponent implements OnInit {
@@ -19,17 +20,58 @@ export class FinancialComponent implements OnInit {
     @Input() item!: StockData;
     
     public path:string
+    public device:string
   
 
    constructor(private httpService: DataService, private modalCtrl: ModalController, 
-    private storage: StorageService, private notify: NotifyService, private event: EventsService) {
+    private storage: StorageService, private notify: NotifyService, private event: EventsService,
+    private platform: Platform) {
 
         this.path = httpService.csvPath;
+
+        this.platform.ready().then(()=>{
+            this.device = 'landscape';
+            if(this.platform.is('mobile') && this.platform.isPortrait()){
+                this.device = 'portrait'
+            }
+        })
    }
 
     ngOnInit() {
 
         console.log('arguments', this.modus, this.item)
+    }
+
+    date(date:number|string){
+
+        if(typeof date === 'number' && date.toString().length === 10){
+            date = Number(date.toString() + '000');
+        }
+  
+        return new Date(date).toLocaleString();
+    }
+
+
+    getChipColor(change: number){
+
+        let color:string = '';
+
+        switch(Math.sign(change)){
+        
+            case 1:
+                color = 'success' 
+                break;
+            case 0: 
+                color = 'medium'
+                break;
+            case -1:
+                color = 'danger'
+                break;
+            default:
+                throw new Error('Color assignment failed')
+        }
+
+        return color;
     }
 
 
@@ -49,10 +91,12 @@ export class FinancialComponent implements OnInit {
 
     getHistory(symbol:string, name: string){
 
-        this.httpService.getHistory(symbol)
-        .subscribe((data)=>{
-            console.log('financial history', data)
-            this.showDetails(data, symbol, 'history', name);
+        fetch(`/ajax/csv?symbol=${symbol}`)
+        .then(response => response.text())
+        .then(text => {
+     
+            console.log('financial history', text, this.csvJSON(text));
+            this.showDetails(this.csvJSON(text), symbol, 'history', name);
         });
     }
 
@@ -82,7 +126,7 @@ export class FinancialComponent implements OnInit {
                 this.httpService.getPrice(symbol)
                     .subscribe((data: any)=> {
                     var csv = data.text();
-                    var tmp = this.csvJSON(csv, name, symbol);
+                    var tmp = this.csvJSON(csv);
                     array.push(tmp);
                     if (index == stop - 1) {
                         console.log('Ausgabe', array);
@@ -96,45 +140,26 @@ export class FinancialComponent implements OnInit {
         }); // Ende Promise
     }
     
-    csvJSON(csv:any, name:string, symbol:string) {
+    csvJSON(csv: string){
         var v = csv;
-        v = v.substring(1, v.length - 3); // Erase "" chars 
-        var lines = v.split('\\n');
+        var lines = v.split('\n');
         var result = [];
-        var volume = 0;
-        var high = 0;
-        var low = 9999;
-        var counter = 0;
-        for (var i = 0; i < lines.length; i++) {
+        
+        for (var i = 1; i < lines.length; i++) {
             var myResult = { date: '', close: '', high: '', low: '', open: '', volume: '' };
             var row = lines[i].split(',');
-            if (i == 0) {
-                var timestamp = (row[0]);
-                var open = row[4];
-            }
+            
             var last = row[1];
+            myResult.date = row[0];
             myResult.close = row[1];
             myResult.high = row[2];
             myResult.low = row[3];
             myResult.open = row[4];
             myResult.volume = row[5];
-            volume += parseInt(myResult.volume);
-            high = Number(myResult.high) > high ? Number(myResult.high) : high;
-            low = Number(myResult.low) < low ? Number(myResult.low) : low;
-            counter = i;
-            var add = (Number(row[0]) * 60);
-            result.push(myResult); // take this for intraday chart
+            result.push(myResult); 
         }
 
-        // Extra code für einen aktuellen Preis mit einer Line
-        // Convert result array to object?
-        var time = new Date(Number(timestamp + '000'));
-       // if (i > 1)  ist das benötigt???
-       //     time.setSeconds(time.getSeconds() + add);
-        var change = Number(last) - Number(open);
-        var myReturn = { name: name, symbol: symbol, date: time, close: Number(result[counter].close), high: high, low: low, open: Number(result[0].open), volume: volume, change: change };
-        //return result; //JavaScript object
-        return myReturn; //JSON
+        return result; //JavaScript object
     }
 
 
@@ -149,7 +174,7 @@ export class FinancialComponent implements OnInit {
 
         this.storage.get('user')
         .then((val) => {
-            userData = JSON.parse(val); // Todo change to ionic local storage for promise
+            userData = val; // Todo change to ionic local storage for promise
             console.log('User Data für Android ', userData);
 
             let result = this.httpService

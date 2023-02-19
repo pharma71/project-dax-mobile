@@ -1,4 +1,4 @@
-  <div id="stock-data">
+  <ng-container id="stock-data" *ngIf="device==='landscape'">
     <ion-card *ngIf="item.symbol">
       <ion-grid>
         <ion-row style="background-color: lightgrey; font-size: 20px;">
@@ -11,7 +11,7 @@
           <ion-col [style.color]="getStyle(item.change)" size="4">
             <span>{{item.name}}</span>        
           </ion-col>
-          <ion-col>{{"Date: " + (item.date | date: "short")}}</ion-col>
+          <ion-col>{{"Date: " + date(item.date)}}</ion-col>
           <ion-col>{{"Last: " + item.close}}</ion-col>
         </ion-row>
         <ion-row>
@@ -28,4 +28,36 @@
         </ion-row>
       </ion-grid>
     </ion-card> 
-  </div>
+  </ng-container>
+
+  <ng-container *ngIf="device==='portrait'">
+    <ion-list>
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="9" class="financial company-name">
+              <span *ngIf="item.name && item.name!=''">{{item.name | truncate:['30']}}</span>
+              <span *ngIf="!item.name || item.name===''">{{item.shortName | truncate:['30']}}</span>
+            </ion-col>
+            <ion-col size="3">
+              <ion-chip [color]="getChipColor(item.change)">{{(item.changePercent | number:"1.2-2")+'%'}}</ion-chip>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="6">
+              <ion-icon color="secondary" ios="add-circle-outline" md="add-circle-sharp" (click)="addToWatchlist(item.symbol, item.name)" *ngIf="modus === 'add'"></ion-icon>
+              <ion-icon color="secondary" ios="close-circle-outline" md="close-circle-sharp" (click)="removeWatchlistItem(item.symbol)" *ngIf="modus === 'remove'"></ion-icon>
+              <ion-icon color="secondary" ios="stats-chart-outline" md="stats-chart-sharp" (click)="getHistory(item.symbol, item.name)"></ion-icon>
+              <ion-icon color="secondary" ios="analytics-outline" md="analytics-sharp" (click)="getChart(item)"></ion-icon>  
+                  </ion-col>
+            <ion-col size="3">
+              <span>{{item.close| number:"1.2-2"}}</span>
+            </ion-col>
+            <ion-col size="3">
+              <span  style="padding-left: 10px;">{{item.change | number:"1.2-2"}}</span>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-list>
+  </ng-container>

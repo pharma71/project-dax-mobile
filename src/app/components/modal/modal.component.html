@@ -1,5 +1,5 @@
 <ion-header>
-    <ion-toolbar color="primary">
+    <ion-toolbar color="primary" style="padding-right: 15px;">
       <ion-title>
         Stock {{mode | titlecase}} {{data.name}}
       </ion-title>
@@ -10,7 +10,7 @@
   <ion-content padding>
     <ion-grid *ngIf="mode == 'history'">
       <ion-row style="background-color: lightgrey;">
-        <ion-col>
+        <ion-col size="3">
           Datum
         </ion-col>
         <ion-col>
@@ -27,20 +27,20 @@
                 </ion-col>
       </ion-row>
       <ion-row *ngFor="let item of historyData; index as i;">
-          <ion-col>
-            {{item}}
+          <ion-col size="3">
+            {{data.data[item].date}}
           </ion-col>
           <ion-col>
-              {{data['data'][item]['1. open']}}
+              {{data.data[item].open|number:"1.2-2"}}
             </ion-col>
             <ion-col>
-                {{data['data'][item]['2. high']}}
+                {{data.data[item].high |number:"1.2-2"}}
               </ion-col>
               <ion-col>
-                  {{data['data'][item]['3. low']}}
+                  {{data.data[item].low |number:"1.2-2"}}
                 </ion-col>
                 <ion-col>
-                    {{data['data'][item]['4. close']}}
+                    {{data.data[item].close|number:"1.2-2"}}
                   </ion-col>
         </ion-row>
     </ion-grid>
@@ -48,15 +48,33 @@
     <ion-grid *ngIf="mode == 'chart'" style="margin-top: 5%;">
       <ion-row style="background-color: lightgrey;">
         <ion-col>{{data.data.name}}</ion-col>
-        <ion-col>{{'Symbol: ' + data.data.symbol}}</ion-col>
-        <ion-col>{{'Last: ' + (data.data.price | number:'.0-2') + ' ' + data.data.currency}}</ion-col>
-        <ion-col>{{'Date: ' + data.data.date}}</ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>{{'Date: ' + getDate(data.data.date)}}</ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>{{'Currency: ' + data.data.currency}}</ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>{{'Last: ' + (data.data.price | number:'.0-2')}}</ion-col>
       </ion-row>
       <ion-row>
         <ion-col>{{'Open: ' + (data.data.open | number:'.0-2')}}</ion-col>
+      </ion-row>
+      <ion-row>
         <ion-col>{{'High: ' + (data.data.high | number:'.0-2')}}</ion-col>
+      </ion-row>
+    <ion-row>
         <ion-col>{{'Low: ' + (data.data.low | number:'.0-2')}}</ion-col>
+      </ion-row>
+      <ion-row>
         <ion-col>{{'Close: ' + (data.data.close | number:'.0-2')}}</ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>{{'fiftyDayAverage: ' + (data.data.fiftyDayAverage | number:'.0-2')}}</ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>{{'fiftyTwoWeekRange: ' + (data.data.fiftyTwoWeekRange)}}</ion-col>
       </ion-row>
     </ion-grid>
   </ion-content>

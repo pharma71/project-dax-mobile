@@ -31,7 +31,10 @@ export class Tab1Page implements AfterViewInit{
   public members:Array<number> = [];
   public recomand$:Observable<Recommandation>;
   public click = new EventEmitter<boolean>();
-  private defaultData = {market: 'Dax', member: '2', recommandation: '100119'}
+  private defaultData = {market: 'World', member: '2', recommandation: '100119'}
+  public $markets = {1: 'World', 2: {1: 'Dax', 2: 'MDax', 3: 'TecDax', 4: 'SDax'}, 3: {1: 'Currency'}};
+  public segment = 1;  
+  public device: string;
 
 
   constructor(private httpService: DataService, private loadCtrl: LoadingController, private notify: NotifyService, 
@@ -52,9 +55,30 @@ export class Tab1Page implements AfterViewInit{
     .then(()=>{
         
         // Load default stock market <dev>
+        if(this.platform.is('mobile')){
+            this.device = this.platform.isPortrait() ? 'portrait' : 'landscape'
+        }
         this.loadMarket(this.defaultData.market);
     })
   }
+
+  segmentChanged(ev: Event) {  
+
+    console.log('segment has changed', ev, this.segment);  
+
+    if(this.segment == 1){
+      console.log('loading world market')
+      this.loadMarket('World');
+    }
+    if(this.segment == 2){
+      console.log('loading dax market')
+      this.loadMarket(this.$markets[2][1]);
+    } 
+    if(this.segment == 3){
+      console.log('loading dax market')
+      this.loadMarket(this.$markets[3][1]);
+    } 
+  }  
 
   async showLoadingSpinner(){
 

@@ -10,74 +10,8 @@ SwiperCore.use([Autoplay, Keyboard, Pagination, Scrollbar, Zoom]);
 
 @Component({
   selector: 'app-swiper',
-  template: `
-  <ion-content [scrollY]=false style="max-height: 250px;width: 100%">
-    <ion-slides pager="true" [options]="config">
-      <ion-slide>
-      <img src="../../assets/150.png">
-      </ion-slide>
-      <ion-slide>
-      <img src="../../assets/1100x600.png">
-      </ion-slide>
-      <ion-slide>
-      <img src="../../assets/oil.jpg">
-      </ion-slide>
-      <ion-slide>
-      <img src="../../assets/gold.jpg">
-      </ion-slide>
-      <ion-slide>
-      <img src="../../assets/autobau.jpg">
-      </ion-slide>
-      <ion-slide>Slide 3</ion-slide>
-      <ion-slide>Slide 4</ion-slide>
-      <ion-slide>Slide 5</ion-slide>
-      <ion-slide>Slide 6</ion-slide>
-    </ion-slides>
-
-    <ion-grid>
-    <ion-row>
-      <ion-col size="2">
-
-        <!-- Previous slide button -->
-        <ion-button 
-          fill="clear" 
-          (click)="click()"
-          [class.disabled]="false">
-          <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
-        </ion-button>
-      </ion-col>
-
-
-      <!-- Autoplay / stop play -->
-      <ion-col size="8">
-        <ion-button 
-          fill="clear" 
-          (click)="click()">
-          <ion-icon slot="icon-only" name="play-outline"></ion-icon>
-        </ion-button>
-
-        <ion-button 
-          fill="clear" 
-          (click)="click()">
-          <ion-icon slot="icon-only" name="stop-outline"></ion-icon>
-        </ion-button>
-      </ion-col>
-
-
-      <!-- Next slide button -->
-      <ion-col size="2">
-        <ion-button
-          fill="clear" 
-          (click)="click()"
-          [class.disabled]="false">
-          <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
-        </ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-  <ion-content>
-
-`,
+  templateUrl: 'swiper.component.html',
+  styleUrls: ['swiper.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class SwiperComponent implements AfterViewInit,AfterContentChecked {
@@ -94,7 +28,8 @@ export class SwiperComponent implements AfterViewInit,AfterContentChecked {
     speed: 750,
     scrollbar: true,
     createElements: true,
-    autoplay: true
+    autoplay: true,
+    parallax: true
   }
 
   ngAfterViewInit(): void {
