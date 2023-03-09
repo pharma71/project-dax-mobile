@@ -19,12 +19,12 @@
     <ion-button style="padding-left: 10px;" (click)="searchSymbol(search)">Suche nach {{search}}</ion-button>
   </ng-container><br><br>
 
-  <ng-container *ngIf="mySymbols">
+  <ng-container *ngIf="searchSymbols">
     <ion-list>
-      <ng-container *ngFor="let item of mySymbols | async">
-        <ng-container *ngIf="item.name != ''">
+      <ng-container *ngFor="let item of searchSymbols | async">
+        <ng-container *ngIf="item.shortname != ''">
           <ion-item>{{'Name: ' + item.shortname+ '  '}}
-            <ion-button (click)="getQuote(item.symbol)" color="secondary">More Details</ion-button>
+            <ion-button (click)="showDetails(item.symbol)" color="secondary">More Details</ion-button>
             <ion-button (click)="addToWatchlist(item.symbol, item.shortname)">Add to Watchlist</ion-button>
           </ion-item>
           <ion-item>{{'Symbol: ' + item.symbol}}</ion-item>
@@ -34,7 +34,7 @@
     </ion-list>
   </ng-container>
 
-   <ng-container *ngIf="!mySymbols" style="text-align: center; margin-top: 10%;"><!--Center the icon -->
+   <ng-container *ngIf="!searchSymbols" style="text-align: center; margin-top: 10%;"><!--Center the icon -->
     <div class="center"> 
       <ion-icon name="search" style="font-size: 300px; display: inline-block;"></ion-icon>
     </div>

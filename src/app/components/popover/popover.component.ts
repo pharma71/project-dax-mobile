@@ -13,10 +13,10 @@ export class PopoverComponent implements OnInit {
   constructor(private popoverCtrl: PopoverController) { 
 
     this.items = [
-      {item: 'Do something 1'},
-      {item: 'Do something 2'},
-      {item: 'Do something 3'},
-      {item: 'Do something 4'},
+      {item: 'Register for newsletter'},
+      {item: 'Want to be notified'},
+      {item: 'See our hotstocks'},
+      {item: 'Top performer'},
     ]
   }
 

@@ -3,25 +3,20 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="primary">
-      <ion-button *ngIf="!userData" (click)="presentLoginForm()" >
+      <ion-button *ngIf="!userData else elseblock" (click)="presentLoginForm()" >
         <ion-icon name="log-in"></ion-icon>
       </ion-button>
-      <ion-button *ngIf="userData" (click)="handleLogout()" color="danger" >
-        <ion-icon name="log-out"></ion-icon>
-      </ion-button>
+      <ng-template #elseblock>
+        <ion-button (click)="handleLogout()" color="danger" >
+          <ion-icon name="log-out"></ion-icon>
+        </ion-button>
+      </ng-template>
     </ion-buttons>
     <ion-buttons slot="secondary">
-      <ion-button>
-        <ion-icon slot="icon-only" name="mail-outline"></ion-icon>
-      </ion-button>
       <ion-button (click)="presentPopover($event)">
         <ion-icon name="menu-outline"></ion-icon>
       </ion-button>
-      <ion-button>
-        <ion-icon slot="icon-only" name="share"></ion-icon>
-      </ion-button>
-        <ion-icon name="log-in-outline"></ion-icon>
-      </ion-buttons>
+    </ion-buttons>
       <ion-title>Home</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -87,12 +82,9 @@
     <ng-container *ngIf="marketData">
       <ng-container *ngFor="let item of marketData | async as data; index as i; last as isLast">
       <br> 
-      <ng-template *ngIf="device==='portrait'">
-        <ion-list-header>
-          <ion-label>{{'market name'}}</ion-label>
-        </ion-list-header>
-      </ng-template>
-      <financial [item]="item" [modus]="'add'"></financial>
+      <ng-container *ngIf="showFinancial(item)">
+        <financial [item]="item" [modus]="'add'"></financial>
+      </ng-container>
       <ion-item *ngIf="item.high == 0">{{"Name: " + item.name+ " No Data Available"}}</ion-item>
       </ng-container>
     </ng-container>

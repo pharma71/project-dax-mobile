@@ -69,51 +69,50 @@ export class NotifyService implements OnInit{
     console.log('popover event');
   }
 
-   async presentLoginMask() {
+  async presentLoginMask() {
 
-      const alert = await this.alertController.create({
-        header: 'Login',
-        inputs: [
-          {
-            name: 'user',
-            type: 'email',
-            placeholder: 'user',
-            id: 'user',
-          },
-          {
-            name: 'pass',
-            type: 'password',
-            id: 'password',
-            placeholder: 'pass'
-          },
-        ],
-        buttons: [
-          {
-            text: 'Cancel',
-            role: 'cancel',
-            cssClass: 'secondary',
-            handler: () => {
-              console.log('Confirm Cancel');
-            }
-          }, {
-            text: 'Ok',
-            handler: (data) => {
-              console.log('Confirm Ok', data);
-              this.event.publishData('login', data);
-            }
+    const alert = await this.alertController.create({
+      header: 'Login',
+      inputs: [
+        {
+          name: 'user',
+          type: 'email',
+          placeholder: 'user',
+          id: 'user',
+        },
+        {
+          name: 'pass',
+          type: 'password',
+          id: 'password',
+          placeholder: 'pass'
+        },
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Confirm Cancel');
           }
-        ]
-      });
-  
-     return await alert.present()
-   
+        }, {
+          text: 'Ok',
+          handler: (data) => {
+            console.log('Confirm Ok', data);
+            this.event.publishData('login', data);
+          }
+        }
+      ]
+    });
+
+    return await alert.present()
   }
   
 
   async presentToast(text?:any) {
 
     const toast = await this.toastController.create({
-      message: text ? text : 'Your setting has been saved.',
+      message: text ? text : 'The market was loaded.',
       duration: 2000
     });
     toast.present();
@@ -152,7 +151,6 @@ export class NotifyService implements OnInit{
     })
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
 }

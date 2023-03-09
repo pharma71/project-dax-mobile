@@ -6,6 +6,16 @@ export const environment = {
   production: false
 };
 
+export const USER = {
+  user_id: 29, 
+  member_id: 2, 
+  name: "Kristian Knorr"
+}
+
+export const SERVER_URL = "https://www.projektdax.de/";
+
+export const CSV_PATH = "/ajax/csv?symbol=";
+
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.

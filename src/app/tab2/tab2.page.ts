@@ -5,6 +5,7 @@ import { EventsService } from '../providers/events.service';
 import { share } from 'rxjs/operators';
 import { ModalComponent } from '../components/modal/modal.component';
 import { ModalController } from '@ionic/angular';
+import { NotifyService } from '../providers/notify.service';
 
 @Component({
   selector: 'app-tab2',
@@ -22,44 +23,39 @@ export class Tab2Page {
   public userData:UserData
 
   constructor(private httpService: DataService, private storage: StorageService,
-            private modalCtrl: ModalController, private event: EventsService) {
+            private modalCtrl: ModalController, private event: EventsService,
+            private notify: NotifyService) {
  
-    this.storage.get('user').then((val:UserData) => {
+    this.storage.get('user')
+    .then((val:UserData) => {
       this.userData = val
-      console.log('User Data', this.userData);
       this.getWatchlist(this.userData.user_id, this.userData.member_id, this.userData.name) ;
-    });
+    })
+    .catch((e:any)=>{
+      this.notify.presentAlert({text: 'User was not loaded', header: 'Storage Alert', subheader: e.toString()}); 
+    })
 
     this.event.subscribeData('updateWatchlist')?.subscribe(()=>this.updateWatchlist())
   }
 
   // Push chart data to market page
   async showDetail(data:any){
-    var modal:HTMLIonModalElement = await this.modalCtrl.create({
+
+    const modal:HTMLIonModalElement = await this.modalCtrl.create({
       component: ModalComponent,
       componentProps: {
-         'data': data, 
+        'data': data, 
         'modal': HTMLIonModalElement
       }
     })
-    console.log('Modal Daten', data, modal);
 
     modal.present()
-  }
-
-  getTicker = function (symbol:any) {
-      if (symbol.indexOf('DE') > -1) {
-          var result = symbol.split('.');
-          result = "FRA:" + result[0];
-          return result;
-      }
-      return symbol;
   }
 
   getWatchlist(user_id:string, member_id:string, name:string) {
      
     this.watchlistData = this.httpService.getWatchlist(user_id, member_id, name).pipe(share());
-    console.log("watchlist data share", this.watchlistData)
+    console.log(this.watchlistData)
   }
 
   updateWatchlist(){

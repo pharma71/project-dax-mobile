@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
+import { USER } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -8,9 +9,9 @@ export class StorageService {
   private _storage: Storage | null = null;
 
   constructor(private storage: Storage) {
-    this.init()
-    .then(()=>this.set('user', {user_id: '29', member_id: '2', name: 'Kristian Knorr'}))
 
+    this.init()
+    .then(()=>this.set('user', USER))
   }
 
   async init() {

@@ -1,12 +1,12 @@
 <ion-content [scrollY]=false style="max-height: 250px;width: 100%">
   <ion-slides pager="true" [options]="config">
-    <ion-slide>
+    <ion-slide (click)="click(1)">
       <div class="container">
         <img src="../../assets/1100x600.png">
         <div class="top-right">top-right</div>
       </div>
     </ion-slide>
-    <ion-slide >
+    <ion-slide (click)="click(2)">
       <div slot="container-start" class="parallax-bg"
       style="background-image: url(https://swiperjs.com/demos/images/nature-1.jpg);" data-swiper-parallax="-23%">
         <div class="slider-text-container">
@@ -26,22 +26,22 @@
         </div>
       </div>
     </ion-slide>
-    <ion-slide>
+    <ion-slide (click)="click(3)">
     <div class="container">
       <img src="../../assets/oil.jpg">
       <div class="centered">Centered</div>
     </div>
     </ion-slide>
-    <ion-slide>
+    <ion-slide (click)="click(4)">
     <img src="../../assets/gold.jpg">
     </ion-slide>
-    <ion-slide>
+    <ion-slide (click)="click(5)">
     <img src="../../assets/autobau.jpg">
     </ion-slide>
-    <ion-slide>Slide 3</ion-slide>
-    <ion-slide>Slide 4</ion-slide>
-    <ion-slide>Slide 5</ion-slide>
-    <ion-slide>Slide 6</ion-slide>
+    <ion-slide (click)="click(6)">Slide 6</ion-slide>
+    <ion-slide (click)="click(7)">Slide 7</ion-slide>
+    <ion-slide (click)="click(8)">Slide 8</ion-slide>
+    <ion-slide (click)="click(9)">Slide 9</ion-slide>
   </ion-slides>
   <ng-container>
     <span>Below slides title</span>
@@ -53,7 +53,7 @@
       <!-- Previous slide button -->
       <ion-button 
         fill="clear" 
-        (click)="click()"
+        (click)="click(0)"
         [class.disabled]="false">
         <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
       </ion-button>
@@ -64,13 +64,13 @@
     <ion-col size="8">
       <ion-button 
         fill="clear" 
-        (click)="click()">
+        (click)="click(0)">
         <ion-icon slot="icon-only" name="play-outline"></ion-icon>
       </ion-button>
 
       <ion-button 
         fill="clear" 
-        (click)="click()">
+        (click)="click(0)">
         <ion-icon slot="icon-only" name="stop-outline"></ion-icon>
       </ion-button>
     </ion-col>
@@ -80,7 +80,7 @@
     <ion-col size="2">
       <ion-button
         fill="clear" 
-        (click)="click()"
+        (click)="click(0)"
         [class.disabled]="false">
         <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
       </ion-button>

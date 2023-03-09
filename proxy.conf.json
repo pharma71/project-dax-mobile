@@ -1,7 +1,7 @@
 
 {
     "/ajax/*": {
-       "target": "http://localhost:80/project-dax-desktop/cakephp",
+       "target": "https://www.projektdax.de/",
        "changeOrigin": true,
        "secure": false,
        "logLevel": "debug",
@@ -11,7 +11,7 @@
     },
 
     "/img/empfehlungen/*": {
-      "target": "http://localhost:80/project-dax-desktop/cakephp",
+      "target": "https://www.projektdax.de/",
       "changeOrigin": true,
       "secure": false,
       "logLevel": "debug",
@@ -21,7 +21,7 @@
    },
   
      "/API/*": {
-      "target": "http://localhost:80/project-dax-desktop/cakephp",
+      "target": "https://www.projektdax.de/",
       "changeOrigin": true,
       "secure": false,
       "logLevel": "debug",

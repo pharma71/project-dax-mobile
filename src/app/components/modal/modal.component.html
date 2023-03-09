@@ -1,7 +1,7 @@
 <ion-header>
     <ion-toolbar color="primary" style="padding-right: 15px;">
       <ion-title>
-        Stock {{mode | titlecase}} {{data.name}}
+        {{mode | titlecase}} {{data.name}}
       </ion-title>
       <ion-icon slot="end" name="close-circle-outline" (click)="close()" style="zoom: 1;"></ion-icon>
     </ion-toolbar>
@@ -28,19 +28,19 @@
       </ion-row>
       <ion-row *ngFor="let item of historyData; index as i;">
           <ion-col size="3">
-            {{data.data[item].date}}
+            {{item.date}}
           </ion-col>
           <ion-col>
-              {{data.data[item].open|number:"1.2-2"}}
+              {{item.open|number:"1.2-2"}}
             </ion-col>
             <ion-col>
-                {{data.data[item].high |number:"1.2-2"}}
+                {{item.high |number:"1.2-2"}}
               </ion-col>
               <ion-col>
-                  {{data.data[item].low |number:"1.2-2"}}
+                  {{item.low |number:"1.2-2"}}
                 </ion-col>
                 <ion-col>
-                    {{data.data[item].close|number:"1.2-2"}}
+                    {{item.close|number:"1.2-2"}}
                   </ion-col>
         </ion-row>
     </ion-grid>
@@ -70,11 +70,22 @@
       <ion-row>
         <ion-col>{{'Close: ' + (data.data.close | number:'.0-2')}}</ion-col>
       </ion-row>
-      <ion-row>
+      <ion-row *ngIf="data.data.fiftyDayAverage">
         <ion-col>{{'fiftyDayAverage: ' + (data.data.fiftyDayAverage | number:'.0-2')}}</ion-col>
       </ion-row>
-      <ion-row>
+      <ion-row *ngIf="data.data.fiftyTwoWeekRange">
         <ion-col>{{'fiftyTwoWeekRange: ' + (data.data.fiftyTwoWeekRange)}}</ion-col>
       </ion-row>
     </ion-grid>
+    <ng-container *ngIf="mode === 'swiper'">
+      <ion-card>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam
+          dictum mattis velit, sit amet faucibus felis iaculis nec. Nulla
+          laoreet justo vitae porttitor porttitor. Suspendisse in sem justo.
+          Integer laoreet magna nec elit suscipit, ac laoreet nibh euismod.
+          Aliquam hendrerit lorem at elit facilisis rutrum. Ut at
+          ullamcorper velit. Nulla ligula nisi, imperdiet ut lacinia nec,
+          tincidunt ut libero. Aenean feugiat non eros quis feugiat.
+      </ion-card>
+    </ng-container>
   </ion-content>

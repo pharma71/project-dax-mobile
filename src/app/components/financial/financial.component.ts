@@ -5,7 +5,7 @@ import { ModalController, Platform } from '@ionic/angular';
 import { NotifyService } from 'src/app/providers/notify.service';
 import { StorageService } from '../../providers/storage.service';
 import { EventsService } from 'src/app/providers/events.service';
-import { of } from 'rxjs';
+import { CSV_PATH } from 'src/environments/environment';
 
 
 @Component({
@@ -27,8 +27,6 @@ export class FinancialComponent implements OnInit {
     private storage: StorageService, private notify: NotifyService, private event: EventsService,
     private platform: Platform) {
 
-        this.path = httpService.csvPath;
-
         this.platform.ready().then(()=>{
             this.device = 'landscape';
             if(this.platform.is('mobile') && this.platform.isPortrait()){
@@ -37,10 +35,7 @@ export class FinancialComponent implements OnInit {
         })
    }
 
-    ngOnInit() {
-
-        console.log('arguments', this.modus, this.item)
-    }
+    ngOnInit() {}
 
     date(date:number|string){
 
@@ -50,7 +45,6 @@ export class FinancialComponent implements OnInit {
   
         return new Date(date).toLocaleString();
     }
-
 
     getChipColor(change: number){
 
@@ -74,9 +68,7 @@ export class FinancialComponent implements OnInit {
         return color;
     }
 
-
-    // Push  chart data to market page
-    async showDetails(data:any, symbol:string, mode:any, name?: string){
+    async showDetails(data:FinancialData, symbol:string, mode:string, name?: string){
 
         const modal:any = await this.modalCtrl.create({
             component: ModalComponent,
@@ -84,18 +76,16 @@ export class FinancialComponent implements OnInit {
                 'data': {data: data, symbol: symbol, mode: mode, name: name}
             }
         })
-        console.log('Modal Daten', data, modal);
 
         modal.present()
     }
 
     getHistory(symbol:string, name: string){
 
-        fetch(`/ajax/csv?symbol=${symbol}`)
+        fetch(CSV_PATH+`${symbol}`)
         .then(response => response.text())
         .then(text => {
      
-            console.log('financial history', text, this.csvJSON(text));
             this.showDetails(this.csvJSON(text), symbol, 'history', name);
         });
     }
@@ -105,51 +95,52 @@ export class FinancialComponent implements OnInit {
         return change > 0 ? 'red' : 'green';
     }
 
-    // returns a promise
-    getPrice(members:any, market:string):Promise<historyData[]> {
+    getPrice(members:any, market:string):Promise<HistoryData[]> {
 
         const array = <any>[];
+        let symbol: string
 
-        return new Promise((resolve, reject)=> {
-            var counter = 1;
-            var stop = Object.keys(members).length;
+        return new Promise((resolve)=> {
+     
+            const stop = Object.keys(members).length;
             Object.keys(members).forEach((value, index)=> {
-                if (market == "watchlist") {
-                    var symbol = members[value].ticker;
-                    var name = members[value].name;
+                if (market === "watchlist") {
+                    symbol = members[value].ticker;
+                    const name = members[value].name;
                 }
                 else {
-                    var symbol = members[value].symbol;
-                    var name = members[value].name;
+                    symbol = members[value].symbol;
+                    const name = members[value].name;
                 }
                 symbol = symbol.replace(':', '_');
                 this.httpService.getPrice(symbol)
-                    .subscribe((data: any)=> {
-                    var csv = data.text();
-                    var tmp = this.csvJSON(csv);
-                    array.push(tmp);
-                    if (index == stop - 1) {
-                        console.log('Ausgabe', array);
-                        resolve(array);
-                    }
-                    console.log("Index", index, "Stop", stop);
-                }, function (err) {
-                    console.log("Error fetching stock data", err);
-                }); // Ende subscribe
+                    .subscribe({
+                        next:(data: any) => {
+                            const txt = data.text();
+                            let csv = this.csvJSON(txt);
+                            array.push(csv);
+                            if (index == stop - 1) {
+                                resolve(array);
+                            }
+                        },
+                        error: (err:any) => {
+                            console.log("Error fetching stock data", err);
+                    }}); // Ende subscribe
             }); // Ende foreach
         }); // Ende Promise
     }
     
-    csvJSON(csv: string){
-        var v = csv;
-        var lines = v.split('\n');
-        var result = [];
+    csvJSON(csv: string):HistoryData[]{
+      
+        const v = csv;
+        const lines = v.split('\n');
+        const result = [];
         
-        for (var i = 1; i < lines.length; i++) {
-            var myResult = { date: '', close: '', high: '', low: '', open: '', volume: '' };
-            var row = lines[i].split(',');
+        for (let i = 1; i < lines.length; i++) {
+            let myResult = { date: '', close: '', high: '', low: '', open: '', volume: '' };
+            let row = lines[i].split(',');
             
-            var last = row[1];
+            let last = row[1];
             myResult.date = row[0];
             myResult.close = row[1];
             myResult.high = row[2];
@@ -159,13 +150,12 @@ export class FinancialComponent implements OnInit {
             result.push(myResult); 
         }
 
-        return result; //JavaScript object
+        return result;
     }
 
+    getChart(item:StockData){
 
-    getChart(item:any){
-
-        this.showDetails(item,item.symbol,'chart');
+        this.showDetails(item,item.symbol,'chart',item.name);
     }
 
     addToWatchlist(symbol:string, name:string) {
@@ -174,21 +164,20 @@ export class FinancialComponent implements OnInit {
 
         this.storage.get('user')
         .then((val) => {
-            userData = val; // Todo change to ionic local storage for promise
-            console.log('User Data für Android ', userData);
+            userData = val;
 
-            let result = this.httpService
+            this.httpService
             .setWatchlistItem(userData.user_id, userData.member_id, symbol, name)
-            .subscribe(
-              (data)=> {this.notify.presentToast('Watchlist item was succesfully saved'); console.log(data, 'Data')},
-              (error) => {this.notify.presentAlert({text: 'Watchlist item was not saved', header: 'Database Alert', subheader: 'Server error'}); 
-                  console.log('HTTP Error', error)} // error path
-              );
-     
-        console.log('Add to Watchlist getriggert', result);
+            .subscribe({
+                next: (data)=> {
+                    this.notify.presentToast('Watchlist item was succesfully saved');
+                    this.event.publishData('updateWatchlist', '')},
+                error: (error) => {
+                    this.notify.presentAlert({text: 'Watchlist item was not saved', header: 'Database Alert', subheader: 'Server error'})
+                }
+            });
         })
-        .catch() // No catch provided
-
+        .catch((error)=>console.log('Set Watchlist Item Error', error))
     } 
 
     removeWatchlistItem(symbol:string) {
@@ -198,15 +187,13 @@ export class FinancialComponent implements OnInit {
         this.storage.get('user')
         .then((val) => {
             userData = val;
-            console.log('User Data für Android ', userData);
 
             this.httpService
                 .removeWatchlistItem(userData.user_id, userData.member_id, symbol)
                 .subscribe((data:any) =>  {
-                console.log('Watchlist item entfernt', data);
+                this.notify.presentToast('Watchlist item was succesfully removed');
                 this.event.publishData('updateWatchlist', true)
             });
          });
     }
-
 }

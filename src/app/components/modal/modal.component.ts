@@ -1,41 +1,40 @@
-import {getLocaleDateFormat} from '@angular/common';
 import {Component, OnInit, Input} from '@angular/core';
 import {ModalController} from '@ionic/angular';
+import { CSV_PATH } from 'src/environments/environment';
+
 const d3 = require('../../../assets/d3.js');
 const techan = require('../../../assets/techan.js');
 
 
 @Component({
-        selector: 'app-modal', 
-        templateUrl: 'modal.component.html', 
-        styleUrls: ['modal.component.scss']
+    selector: 'app-modal', 
+    templateUrl: 'modal.component.html', 
+    styleUrls: ['modal.component.scss']
 })
 
 
 export class ModalComponent implements OnInit {
 
     @Input()data !: {
-        mode: any,
+        mode: string,
         data: any,
-        symbol: any,
+        symbol: string,
         name: string
     }
 
-    public historyData : any
+    public historyData : HistoryData[]
     public mode : string = '';
-    public path : string = "/ajax/csv?symbol=";
+    public path : string = CSV_PATH;
 
 
     constructor(private modal : ModalController) {}
 
     ngOnInit() {
 
-        console.log(this.data)
         switch (this.data["mode"]) {
 
             case 'history':
-                this.historyData = Object.keys(this.data.data)
-                this.historyData.sort(( a:any, b:any )=> b - a );
+                this.historyData = this.data.data
                 this.mode = "history";
                 break;
 
@@ -43,8 +42,13 @@ export class ModalComponent implements OnInit {
                 this.getChart(this.data['symbol']);
                 this.mode = "chart";
                 break;
-        }
 
+            case 'swiper':
+                this.mode = "swiper"
+                break;
+
+            default:
+        }
     }
 
     close() {
@@ -85,11 +89,10 @@ export class ModalComponent implements OnInit {
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         symbol = symbol.trim();
-        let path = this.path.concat(symbol);
+        let path = CSV_PATH.concat(symbol);
 
         d3.csv(path, function (error: any, data: Array<any>) {
             var accessor = candlestick.accessor();
-
             data = data.map(function (d: any) {
                 return {
                     date: parseDate(d.Date),
@@ -102,7 +105,7 @@ export class ModalComponent implements OnInit {
             }).sort(function (a: any, b: any) {
                 return d3.ascending(accessor.d(a), accessor.d(b));
             });
-            console.log('csvChartData', data, error, 'data');
+           
             svg.append("g").attr("class", "candlestick");
 
             svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")");
@@ -129,8 +132,12 @@ export class ModalComponent implements OnInit {
 
     getDate(unixdate: number){
 
-        const date = new Date(Number(String(unixdate) + '000'));
+        // Convert 7-digit timestamp
+        if(String(unixdate).length === 7){
+            unixdate = Number(String(unixdate) + '000')
+        }
+        
+        const date = new Date();
         return date.toLocaleDateString();
     }
-
 }

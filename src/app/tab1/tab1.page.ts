@@ -22,14 +22,13 @@ export class Tab1Page implements AfterViewInit{
 
 // Home Page
 
-  public marketData:any; // Observable
+  public marketData:Observable<StockData[]>|Promise<any>; // Observable
   public resolve:boolean = true;
-  public historyData:Record<string,any> = [];
   public message:string = '';
   public market:string = '';
   public userData:UserData|null = null;
   public members:Array<number> = [];
-  public recomand$:Observable<Recommandation>;
+  public recomand$:Observable<Recommandation[]>;
   public click = new EventEmitter<boolean>();
   private defaultData = {market: 'World', member: '2', recommandation: '100119'}
   public $markets = {1: 'World', 2: {1: 'Dax', 2: 'MDax', 3: 'TecDax', 4: 'SDax'}, 3: {1: 'Currency'}};
@@ -79,6 +78,13 @@ export class Tab1Page implements AfterViewInit{
       this.loadMarket(this.$markets[3][1]);
     } 
   }  
+
+  showFinancial(item:any){
+
+    let quoteType = ["EQUITY", "INDEX", "CURRENCY", "FUTURE"];
+
+    return quoteType.includes(item.quoteType)
+  }
 
   async showLoadingSpinner(){
 

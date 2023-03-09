@@ -1,10 +1,8 @@
 import {AfterContentChecked, AfterViewInit, Component, ElementRef, ViewChild, ViewEncapsulation} from '@angular/core';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+import { ModalComponent } from '../modal/modal.component';
 import SwiperCore, { Autoplay, Keyboard, Pagination, Navigation, Scrollbar, Zoom, SwiperOptions } from 'swiper';
-//SwiperCore.use([Autoplay, Keyboard, Pagination, Scrollbar, Zoom, Navigation]);
-import { IonSlides } from '@ionic/angular';
 
-SwiperCore.use([Autoplay, Keyboard, Pagination, Scrollbar, Zoom]);
 
 // https://masteringionic.com/blog/building-a-slideshow-with-ionic-slides-api
 
@@ -15,6 +13,8 @@ SwiperCore.use([Autoplay, Keyboard, Pagination, Scrollbar, Zoom]);
   encapsulation: ViewEncapsulation.None
 })
 export class SwiperComponent implements AfterViewInit,AfterContentChecked {
+
+  constructor(private modal: ModalController){}
 
   public config: SwiperOptions = {
     initialSlide: 0,
@@ -38,7 +38,17 @@ export class SwiperComponent implements AfterViewInit,AfterContentChecked {
 
   ngAfterContentChecked(): void {}
 
-  click(){
+  async click(id:number){
+
+    if(id > 0){
+      const modal:any = await this.modal.create({
+        component: ModalComponent,
+        componentProps: {
+            'data': {mode: 'swiper', name: `slide ${id}`}
+      }})
+
+      modal.present()
+    }
     console.log('swiper button clicked')
   }
 }
